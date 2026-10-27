@@ -1,0 +1,18 @@
+{
+  "name": "nb-newcomer-guide",
+  "private": true,
+  "workspaces": [
+    "api",
+    "web"
+  ],
+  "engines": {
+    "node": ">=22.11.0"
+  },
+  "scripts": {
+    "dev:api": "npm run dev -w api",
+    "dev:web": "npm run dev -w web",
+    "build": "npm run build -w api && npm run build -w web",
+    "test": "npm test -w api && npm test -w web",
+    "lint": "npm run lint -w web"
+  }
+}

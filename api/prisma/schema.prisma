@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  VISITOR
+  MEMBER
+  MODERATOR
+  ADMIN
+}
+
+enum ProfileType {
+  INTERNATIONAL_STUDENT
+  PERMANENT_RESIDENT
+  WORK_PERMIT_HOLDER
+  FAMILY
+}
+
+enum ProgressStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  DONE
+}
+
+enum TipStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id                String         @id @default(uuid())
+  email             String         @unique
+  passwordHash      String?        @map("password_hash")
+  authProvider      String         @default("local") @map("auth_provider")
+  role              Role           @default(MEMBER)
+  preferredLanguage String         @default("en") @map("preferred_language")
+  createdAt         DateTime       @default(now()) @map("created_at")
+  profile           Profile?
+  progress          UserProgress[]
+  tips              Tip[]          @relation("TipAuthor")
+  reviewedTips      Tip[]          @relation("TipReviewer")
+  reminders         Reminder[]
+
+  @@map("users")
+}
+
+model Profile {
+  userId      String      @id @map("user_id")
+  profileType ProfileType @map("profile_type")
+  arrivalDate DateTime?   @map("arrival_date") @db.Date
+  city        String?
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+model ChecklistItem {
+  id                String         @id @default(uuid())
+  slug              String         @unique
+  title             String
+  detail            String
+  bring             String?
+  where             String?
+  officialSourceUrl String         @map("official_source_url")
+  lastCheckedAt     DateTime       @map("last_checked_at") @db.Date
+  sortOrder         Int            @map("sort_order")
+  profiles          ProfileItem[]
+  progress          UserProgress[]
+  reminders         Reminder[]
+
+  @@map("checklist_items")
+}
+
+model ProfileItem {
+  profileType     ProfileType   @map("profile_type")
+  checklistItemId String        @map("checklist_item_id")
+  checklistItem   ChecklistItem @relation(fields: [checklistItemId], references: [id], onDelete: Cascade)
+
+  @@id([profileType, checklistItemId])
+  @@map("profile_items")
+}
+
+model UserProgress {
+  userId      String         @map("user_id")
+  itemId      String         @map("item_id")
+  status      ProgressStatus @default(NOT_STARTED)
+  completedAt DateTime?      @map("completed_at")
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item        ChecklistItem  @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@id([userId, itemId])
+  @@map("user_progress")
+}
+
+model Tip {
+  id         String    @id @default(uuid())
+  authorId   String?   @map("author_id")
+  category   String
+  body       String
+  status     TipStatus @default(PENDING)
+  createdAt  DateTime  @default(now()) @map("created_at")
+  reviewedBy String?   @map("reviewed_by")
+  author     User?     @relation("TipAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  reviewer   User?     @relation("TipReviewer", fields: [reviewedBy], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@map("tips")
+}
+
+model Reminder {
+  id     String        @id @default(uuid())
+  userId String        @map("user_id")
+  itemId String        @map("item_id")
+  sendOn DateTime      @map("send_on") @db.Date
+  sentAt DateTime?     @map("sent_at")
+  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item   ChecklistItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@index([sendOn, sentAt])
+  @@map("reminders")
+}
