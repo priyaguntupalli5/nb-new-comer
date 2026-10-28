@@ -1,4 +1,5 @@
 import { Outlet, Route, Routes } from "react-router";
+import { ChatWidget } from "./components/chat/ChatWidget";
 import { SiteFooter } from "./components/SiteFooter";
 import { SiteHeader } from "./components/SiteHeader";
 import { ChecklistPage } from "./pages/ChecklistPage";
@@ -13,6 +14,7 @@ function Layout() {
         <Outlet />
       </main>
       <SiteFooter />
+      <ChatWidget />
     </div>
   );
 }

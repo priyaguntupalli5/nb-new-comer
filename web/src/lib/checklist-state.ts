@@ -5,6 +5,16 @@ const isProfile = (value: unknown): value is ProfileType => PROFILE_TYPES.includ
 const isSlugList = (value: unknown): value is string[] =>
   Array.isArray(value) && value.every((slug) => typeof slug === "string");
 
+// For code outside the page tree (the chat panel) that needs the latest choice at the moment it acts.
+export function readStoredProfile(): ProfileType | undefined {
+  try {
+    const value: unknown = JSON.parse(localStorage.getItem("nbg.profile") ?? "null");
+    return isProfile(value) ? value : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export function useProfile() {
   return useStoredState<ProfileType>("nbg.profile", "INTERNATIONAL_STUDENT", isProfile);
 }

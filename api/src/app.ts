@@ -7,6 +7,7 @@ import { logger } from "./lib/logger.js";
 import { errorHandler, notFound } from "./middleware/error-handler.js";
 import { healthRouter } from "./modules/health/health.routes.js";
 import { checklistRouter } from "./modules/checklist/checklist.routes.js";
+import { chatRouter } from "./modules/chat/chat.routes.js";
 
 export function createApp() {
   const app = express();
@@ -18,6 +19,7 @@ export function createApp() {
 
   app.use("/api/health", healthRouter);
   app.use("/api/checklist", checklistRouter);
+  app.use("/api/chat", chatRouter);
 
   app.use(notFound);
   app.use(errorHandler);
