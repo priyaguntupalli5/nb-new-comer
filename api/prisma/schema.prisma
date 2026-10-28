@@ -67,6 +67,9 @@ model ChecklistItem {
   detail            String
   bring             String?
   where             String?
+  cost              String?
+  timeline          String?
+  keyFacts          String[]       @default([]) @map("key_facts")
   officialSourceUrl String         @map("official_source_url")
   lastCheckedAt     DateTime       @map("last_checked_at") @db.Date
   sortOrder         Int            @map("sort_order")

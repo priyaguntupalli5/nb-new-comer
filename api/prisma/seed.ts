@@ -12,9 +12,22 @@ const items = [
   {
     slug: "sin",
     title: "Get your Social Insurance Number (SIN)",
-    detail: "You need one before you can legally work in Canada, including part-time jobs.",
-    bring: "Passport, study or work permit, or PR confirmation",
-    where: "Service Canada office or online",
+    detail:
+      "A 9-digit number you need to work in Canada, including part-time jobs, and to get government benefits.",
+    bring:
+      "Your study permit, work permit or PR card (or COPR, if you became a PR less than a year ago), plus your passport",
+    where: "Online, by mail, or in person at Service Canada with an appointment",
+    cost: "Free",
+    timeline: "About 5 business days online, about 20 by mail, same day in person",
+    keyFacts: [
+      "Your study permit must say you \"may accept employment\" or \"may work\" in Canada. An email from IRCC is not accepted.",
+      "If you are a temporary resident, your SIN starts with 9 and expires the same day as your permit. Update it each time you get a new permit.",
+      "You will not get a plastic card. Service Canada sends a confirmation letter instead.",
+      "If you forget a document, you cannot edit your application. You have to submit a new one.",
+      "Give your SIN only to your employer after you are hired, your bank, and the government. Landlords, phone companies and job applications cannot require it.",
+      "Never give your SIN to someone who calls, texts or emails you. Be wary of messages that threaten to lock or cancel your SIN: that is a scam.",
+      "Do not carry your SIN letter in your wallet. Keep it somewhere safe at home.",
+    ],
     officialSourceUrl: "https://www.canada.ca/en/employment-social-development/services/sin.html",
     sortOrder: 10,
     profiles: [INTERNATIONAL_STUDENT, PERMANENT_RESIDENT, WORK_PERMIT_HOLDER, FAMILY],

@@ -15,6 +15,9 @@ export type ChecklistItem = {
   detail: string;
   bring: string | null;
   where: string | null;
+  cost: string | null;
+  timeline: string | null;
+  keyFacts: string[];
   officialSourceUrl: string;
   lastCheckedAt: string;
 };

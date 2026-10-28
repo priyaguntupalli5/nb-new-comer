@@ -13,6 +13,9 @@ const item = (slug: string, title: string): ChecklistItem => ({
   detail: `${title} detail`,
   bring: "Passport",
   where: "Online",
+  cost: slug === "sin" ? "Free" : null,
+  timeline: null,
+  keyFacts: slug === "sin" ? ["Your SIN starts with 9 if you are a temporary resident."] : [],
   officialSourceUrl: `https://example.gc.ca/${slug}`,
   lastCheckedAt: "2026-10-27T00:00:00.000Z",
 });
@@ -57,6 +60,14 @@ describe("HomePage", () => {
     expect(screen.getByRole("heading", { name: "Open a bank account" })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Get a licence" })).not.toBeInTheDocument();
     expect(screen.getByText("0 of 3 done")).toBeInTheDocument();
+  });
+
+  it("shows cost and key facts only for steps that have them", async () => {
+    renderPage();
+    expect(await screen.findByText("Free")).toBeInTheDocument();
+    expect(screen.getAllByText("Cost")).toHaveLength(1);
+    expect(screen.getByText("What to know (1)")).toBeInTheDocument();
+    expect(screen.getByText("Your SIN starts with 9 if you are a temporary resident.")).toBeInTheDocument();
   });
 
   it("tracks progress and remembers it", async () => {

@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useChecklist, type ChecklistItem, type ProfileType } from "../../api/checklist";
 import { formatDate } from "../../lib/content";
@@ -111,6 +112,12 @@ type StepCardProps = {
 
 function StepCard({ step, number, done, onToggle }: StepCardProps) {
   const { t } = useTranslation();
+  const facts = [
+    { label: t("steps.bring"), value: step.bring },
+    { label: t("steps.where"), value: step.where },
+    { label: t("steps.cost"), value: step.cost },
+    { label: t("steps.timeline"), value: step.timeline },
+  ];
 
   return (
     <li
@@ -131,19 +138,31 @@ function StepCard({ step, number, done, onToggle }: StepCardProps) {
       </div>
       <p className="mt-3 text-[0.95rem] leading-relaxed text-muted">{step.detail}</p>
       <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm">
-        {step.bring && (
-          <>
-            <dt className="font-semibold">{t("steps.bring")}</dt>
-            <dd className="text-muted">{step.bring}</dd>
-          </>
-        )}
-        {step.where && (
-          <>
-            <dt className="font-semibold">{t("steps.where")}</dt>
-            <dd className="text-muted">{step.where}</dd>
-          </>
+        {facts.map(
+          ({ label, value }) =>
+            value && (
+              <Fragment key={label}>
+                <dt className="font-semibold">{label}</dt>
+                <dd className="text-muted">{value}</dd>
+              </Fragment>
+            ),
         )}
       </dl>
+      {step.keyFacts.length > 0 && (
+        <details className="group mt-4 rounded-lg border border-line bg-white text-sm">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-2 rounded-lg px-3 py-2 font-semibold [&::-webkit-details-marker]:hidden">
+            {t("steps.keyFacts", { count: step.keyFacts.length })}
+            <span aria-hidden="true" className="transition-transform group-open:rotate-180">
+              ▾
+            </span>
+          </summary>
+          <ul className="list-disc space-y-2 border-t border-line py-3 pr-3 pl-8 leading-relaxed text-muted">
+            {step.keyFacts.map((fact) => (
+              <li key={fact}>{fact}</li>
+            ))}
+          </ul>
+        </details>
+      )}
       <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-3 pt-6">
         <button
           type="button"
