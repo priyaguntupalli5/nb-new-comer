@@ -37,6 +37,29 @@ const sinProtectFacts = [
   "Do not carry your SIN letter in your wallet. Keep it somewhere safe at home.",
 ];
 
+// Bank account rules from the Financial Consumer Agency of Canada, shared by every newcomer category.
+const bankShared = {
+  title: "Open a bank account",
+  where: "Any bank branch. You may need to go in person the first time",
+  keyFacts: [
+    "Bring originals. Banks do not accept copies of your ID.",
+    "A passport is not required. Any two documents from the bank's accepted list work, such as a Canadian driver's licence and a utility bill.",
+    "Option 2: no address document yet? Bring one ID with your name and date of birth, and have someone the bank trusts, such as an existing customer or a respected community member, confirm who you are.",
+    "A lease is not on the accepted list. If all you have is a passport and a permit, ask the bank about option 2 or which other documents it accepts.",
+    "Ask for a low-cost or no-cost account by name. Low-cost accounts are $4 or less a month, include at least 18 debit transactions, and cannot require a minimum balance.",
+    "A bank can only refuse you for specific reasons, such as suspected fraud. If it refuses, it must tell you in writing and explain how to complain.",
+    "Your bank may ask for your SIN, because it has to report the interest you earn.",
+    "Compare accounts with the Account Comparison Tool from the Financial Consumer Agency of Canada.",
+  ],
+  officialSourceUrl: "https://www.canada.ca/en/financial-consumer-agency/services/banking/opening-bank-account.html",
+  sortOrder: 30,
+};
+const bankDetail = "You need a Canadian account to get paid, pay rent and receive government payments.";
+const bankAddressDocs = [
+  "One original document with your name and address, such as a recent Canadian utility bill, bank or credit card statement, or government benefit or tax statement",
+  "No address document yet? You can still open an account: see option 2 under \"What to know\"",
+];
+
 // Medicare rules shared by every newcomer category. Each category's card adds its own documents and eligibility facts.
 const MEDICARE_APPLY_URL =
   "https://www2.gnb.ca/content/gnb/en/departments/health/DrugPlans/content/medicare/ApplyingforaCard.html";
@@ -44,8 +67,12 @@ const MEDICARE_DOCUMENTS_URL =
   "https://www2.gnb.ca/content/gnb/en/departments/health/DrugPlans/content/medicare/RequiredDocumentationforYourMedicare.html";
 const medicareWhere = "Online, or a paper form sent by mail or email, or taken to a Service New Brunswick office";
 const medicareTimeline = "10 to 12 weeks. You get a letter with your start date, then your card";
+const medicareEntryStamp = "Passport page with your last entry stamp (required, even if you use a different ID above)";
 const medicareBeforeYouApply = [
   "You can only apply after you have physically moved to New Brunswick.",
+  "A passport is not the only ID accepted. You can also use a Canadian or translated birth certificate, NB driver's licence or ID card, student ID, employee ID, citizenship certificate, First Nations status card, a baptismal certificate showing place and date of birth, or a health card from another province.",
+  "The entry stamp page is not your ID. It shows Medicare when you arrived in Canada, so it is needed on top of your ID.",
+  "No entry stamp in your passport? Call 1-888-762-8600 before you apply and ask what to send instead.",
   "Your proof of address must show your name and NB address: for example a lease, utility bill, pay stub, employer letter or tenant insurance policy.",
   "Send photocopies, not originals. Each document can only count for one requirement, and an application missing a document is not processed.",
   "Apply only once. Do not send a paper form if you already applied online.",
@@ -128,8 +155,8 @@ const items = [
       "Full-time international students can get New Brunswick Medicare, but it takes weeks to start. Ask your international student office what covers you until then, so you are never caught without it.",
     bring: [
       "Study permit",
-      "Passport photo page, or your student ID",
-      "Passport page with your last entry stamp",
+      "One ID, such as your passport photo page, student ID, NB driver's licence or birth certificate",
+      medicareEntryStamp,
       "Proof of full-time enrolment for the full school year",
       "One proof of NB address, such as your lease or a utility bill",
     ],
@@ -155,8 +182,8 @@ const items = [
       "Your provincial health insurance. As a permanent resident you qualify once New Brunswick is your permanent home. Apply as soon as you move here.",
     bring: [
       "PR card (both sides), COPR or Record of Landing",
-      "Passport photo page",
-      "Passport page with your last entry stamp",
+      "One ID, such as your passport photo page, NB driver's licence, birth certificate or employee ID",
+      medicareEntryStamp,
       "One proof of NB address, such as your lease, a utility bill or a pay stub",
     ],
     where: medicareWhere,
@@ -179,8 +206,8 @@ const items = [
       "Your provincial health insurance. Check that your work permit qualifies, then apply as soon as you move here.",
     bring: [
       "Valid work permit",
-      "Passport photo page, or your employee ID",
-      "Passport page with your last entry stamp",
+      "One ID, such as your passport photo page, employee ID, NB driver's licence or birth certificate",
+      medicareEntryStamp,
       "One proof of NB address, such as your lease, a pay stub or a letter from your employer",
     ],
     where: medicareWhere,
@@ -205,8 +232,8 @@ const items = [
       "Provincial health insurance for each person in your family. One application can list everyone. Apply as soon as you move here.",
     bring: [
       "Each person: PR card or COPR, their permit, or a Canadian birth certificate for children born in Canada",
-      "Each person: a second ID, such as their passport photo page",
-      "Each person who arrived from abroad: the passport page with their last entry stamp",
+      "Each person: one ID, such as their passport photo page, birth certificate, student ID or NB ID card",
+      "Each person: the passport page with their last entry stamp (required, even if they use a different ID)",
       "You only: one proof of NB address, such as your lease or a utility bill",
     ],
     where: medicareWhere,
@@ -236,15 +263,50 @@ const items = [
     profiles: [FAMILY],
   },
   {
+    // Slug kept from when this card was shared, so progress saved in browsers still matches.
     slug: "bank-account",
-    title: "Open a bank account",
-    detail: "Many banks offer student or newcomer accounts. Compare them before you pick.",
-    bring: ["Passport", "Permit or PR confirmation", "Proof of address"],
-    where: "Any branch, or start online",
-    officialSourceUrl:
-      "https://www.canada.ca/en/financial-consumer-agency/services/banking/opening-bank-account.html",
-    sortOrder: 30,
-    profiles: [INTERNATIONAL_STUDENT, PERMANENT_RESIDENT, WORK_PERMIT_HOLDER, FAMILY],
+    ...bankShared,
+    detail: `${bankDetail} As a student and a newcomer in your first year, you qualify for a no-cost account.`,
+    bring: [
+      "One original ID with your name and date of birth, such as your passport, study permit, or a Canadian driver's licence",
+      ...bankAddressDocs,
+    ],
+    cost: "$0 a month: students and newcomers in their first year qualify for a no-cost account",
+    profiles: [INTERNATIONAL_STUDENT],
+  },
+  {
+    slug: "bank-account-permanent-resident",
+    ...bankShared,
+    detail: `${bankDetail} In your first year in Canada, you qualify for a no-cost newcomer account.`,
+    bring: [
+      "One original ID with your name and date of birth, such as your passport, PR card, or a Canadian driver's licence",
+      ...bankAddressDocs,
+    ],
+    cost: "$0 a month in your first year in Canada, then $4 or less for a low-cost account",
+    profiles: [PERMANENT_RESIDENT],
+  },
+  {
+    slug: "bank-account-work-permit",
+    ...bankShared,
+    detail: `${bankDetail} In your first year in Canada, you qualify for a no-cost newcomer account.`,
+    bring: [
+      "One original ID with your name and date of birth, such as your passport, work permit, or a Canadian driver's licence",
+      ...bankAddressDocs,
+    ],
+    cost: "$0 a month in your first year in Canada, then $4 or less for a low-cost account",
+    profiles: [WORK_PERMIT_HOLDER],
+  },
+  {
+    slug: "bank-account-family",
+    ...bankShared,
+    title: "Open bank accounts for your family",
+    detail: `${bankDetail} Newcomers in their first year and children 18 or younger qualify for a no-cost account.`,
+    bring: [
+      "Each adult opening an account: one original ID with their name and date of birth, such as their passport, PR card or permit",
+      ...bankAddressDocs,
+    ],
+    cost: "$0 a month for newcomers in their first year and for children 18 or younger",
+    profiles: [FAMILY],
   },
   {
     slug: "phone-plan",
