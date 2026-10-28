@@ -1,6 +1,7 @@
 import { Outlet, Route, Routes } from "react-router";
 import { SiteFooter } from "./components/SiteFooter";
 import { SiteHeader } from "./components/SiteHeader";
+import { ChecklistPage } from "./pages/ChecklistPage";
 import { ComingSoonPage } from "./pages/ComingSoonPage";
 import { HomePage } from "./pages/HomePage";
 
@@ -21,6 +22,7 @@ export default function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
+        <Route path="checklist" element={<ChecklistPage />} />
         <Route path="*" element={<ComingSoonPage />} />
       </Route>
     </Routes>

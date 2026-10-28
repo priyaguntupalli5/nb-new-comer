@@ -247,6 +247,30 @@ const items = [
     profiles: [INTERNATIONAL_STUDENT, PERMANENT_RESIDENT, WORK_PERMIT_HOLDER, FAMILY],
   },
   {
+    slug: "phone-plan",
+    title: "Get a Canadian phone number",
+    detail:
+      "Employers, landlords, your bank and government offices need a local number to reach you. Compare prepaid and monthly plans before you sign.",
+    bring: [
+      "Photo ID, such as your passport",
+      "A way to pay, such as a debit or credit card",
+      "Your phone from home, if you want to keep using it",
+    ],
+    where: "Any phone company store, or online",
+    cost: "Depends on the plan. Prepaid has no contract",
+    keyFacts: [
+      "A phone company cannot require your SIN to give you service.",
+      "Changed your mind? You can return the phone and cancel a new contract within 15 days without penalty, if you used no more than half your monthly allowance. People with disabilities get 30 days.",
+      "You can cancel a contract after 2 years with no cancellation fee, even if you agreed to a longer term.",
+      "Phones sold in Canada must be unlocked, and unlocking is free. A phone from home must also work on Canadian networks, so check before you buy a plan.",
+      "Your phone company must stop data overage charges at $50 a month, unless you agree to pay more.",
+      "Prepaid plans need no contract, which suits a short stay or someone without Canadian credit history.",
+    ],
+    officialSourceUrl: "https://crtc.gc.ca/eng/phone/mobile/code.htm",
+    sortOrder: 35,
+    profiles: [INTERNATIONAL_STUDENT, PERMANENT_RESIDENT, WORK_PERMIT_HOLDER, FAMILY],
+  },
+  {
     slug: "drivers-licence",
     title: "Exchange or get a driver's licence",
     detail:

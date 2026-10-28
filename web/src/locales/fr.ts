@@ -43,6 +43,11 @@ export const fr: Messages = {
     error: "Nous n'avons pas pu charger vos étapes. Vérifiez votre connexion et réessayez.",
     retry: "Réessayer",
     empty: "Nous n'avons pas encore d'étapes pour ce profil.",
+    seeAll: "Voir les {{count}} étapes",
+  },
+  checklist: {
+    heading: "Ma liste",
+    lead: "Toutes les étapes de vos 90 premiers jours, dans l'ordre où vous en avez besoin. Votre progression est enregistrée sur cet appareil.",
   },
   essentials: {
     heading: "L'essentiel, au même endroit",
