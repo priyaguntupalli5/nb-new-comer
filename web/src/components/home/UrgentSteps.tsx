@@ -113,7 +113,6 @@ type StepCardProps = {
 function StepCard({ step, number, done, onToggle }: StepCardProps) {
   const { t } = useTranslation();
   const facts = [
-    { label: t("steps.bring"), value: step.bring },
     { label: t("steps.where"), value: step.where },
     { label: t("steps.cost"), value: step.cost },
     { label: t("steps.timeline"), value: step.timeline },
@@ -137,6 +136,16 @@ function StepCard({ step, number, done, onToggle }: StepCardProps) {
         <h3 className="font-display text-lg leading-snug font-bold">{step.title}</h3>
       </div>
       <p className="mt-3 text-[0.95rem] leading-relaxed text-muted">{step.detail}</p>
+      {step.bring.length > 0 && (
+        <div className="mt-4 text-sm">
+          <h4 className="font-semibold">{t("steps.bring")}</h4>
+          <ul className="mt-1.5 list-disc space-y-1 pl-5 leading-snug text-muted marker:text-teal">
+            {step.bring.map((doc) => (
+              <li key={doc}>{doc}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm">
         {facts.map(
           ({ label, value }) =>

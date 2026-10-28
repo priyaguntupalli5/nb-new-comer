@@ -13,7 +13,7 @@ export type ChecklistItem = {
   slug: string;
   title: string;
   detail: string;
-  bring: string | null;
+  bring: string[];
   where: string | null;
   cost: string | null;
   timeline: string | null;

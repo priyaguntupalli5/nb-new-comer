@@ -11,7 +11,7 @@ const item = (slug: string, title: string): ChecklistItem => ({
   slug,
   title,
   detail: `${title} detail`,
-  bring: "Passport",
+  bring: ["Passport", "Proof of address"],
   where: "Online",
   cost: slug === "sin" ? "Free" : null,
   timeline: null,
@@ -60,6 +60,7 @@ describe("HomePage", () => {
     expect(screen.getByRole("heading", { name: "Open a bank account" })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Get a licence" })).not.toBeInTheDocument();
     expect(screen.getByText("0 of 3 done")).toBeInTheDocument();
+    expect(screen.getAllByRole("listitem").filter((li) => li.textContent === "Proof of address")).toHaveLength(3);
   });
 
   it("shows cost and key facts only for steps that have them", async () => {
