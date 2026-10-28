@@ -60,6 +60,37 @@ const bankAddressDocs = [
   "No address document yet? You can still open an account: see option 2 under \"What to know\"",
 ];
 
+// Driver's licence rules for new residents from Service New Brunswick, shared by every newcomer category.
+const licenceShared = {
+  title: "Exchange or get a driver's licence",
+  where: "Any Service New Brunswick office",
+  cost: "Up to $100 for the licence. If you need a road test, $25 plus HST",
+  timeline: "You get a 30-day temporary licence when you apply. Your card is mailed within about 14 days",
+  officialSourceUrl: "https://www.gnb.ca/en/topic/driving-transportation/driving-licensing/licences-new-residents.html",
+  sortOrder: 40,
+};
+const licenceDetail =
+  "Depending on your country, you either exchange your licence or take the full test. An NB licence is also official photo ID.";
+const licenceBring = (statusDocument: string) => [
+  "Your original licence from home",
+  "An official English or French translation, if it is in another language (from a translation agency, or an international driver's licence)",
+  statusDocument,
+  "One ID and two proofs of NB address",
+];
+const licenceTemporaryGrace =
+  "With a work or study permit valid for more than 6 months, you can drive on your valid home licence for up to 6 months from the day you land in Canada.";
+const licenceFacts = [
+  "No written or road test if your licence is from: Australia, Austria, Belgium, Denmark, France, Germany, Ireland, Isle of Man, Italy, Japan, the Netherlands, New Zealand, Norway, Portugal, South Korea, Spain, Sweden, Switzerland, Taiwan, Ukraine, or the UK (England, Scotland, Wales).",
+  "Licences from other Canadian provinces and US states are exchanged class for class, with no tests.",
+  "From any other country, you take the full exam: a vision test, a written knowledge test and a road test.",
+  "Taiwan: also bring an English translation authenticated by the Taipei Economic and Cultural Office in Toronto, and a Verification Certificate issued in the last 3 months. Ukraine: category B or BE licences need a vision test.",
+  "The knowledge test can be done online or at a Service New Brunswick office. Wait at least 4 business days after passing before going to an office for the next step.",
+  "Book the road test online or at 1-888-762-8600. Bring a driver with a full licence and at least 3 years' experience, and a registered, insured vehicle.",
+  "Exchanging your home licence on the day of your road test? Arrive 45 minutes early.",
+  "New Brunswick keeps your home licence for 5 years after you exchange it.",
+  "Questions? Call the Motor Vehicle Branch at 506-453-2410.",
+];
+
 // Medicare rules shared by every newcomer category. Each category's card adds its own documents and eligibility facts.
 const MEDICARE_APPLY_URL =
   "https://www2.gnb.ca/content/gnb/en/departments/health/DrugPlans/content/medicare/ApplyingforaCard.html";
@@ -333,15 +364,50 @@ const items = [
     profiles: [INTERNATIONAL_STUDENT, PERMANENT_RESIDENT, WORK_PERMIT_HOLDER, FAMILY],
   },
   {
+    // Slug kept from when this card was shared, so progress saved in browsers still matches.
     slug: "drivers-licence",
-    title: "Exchange or get a driver's licence",
-    detail:
-      "Find out whether you can exchange your licence from home or need to take a test. An NB licence is also official photo ID.",
-    bring: ["Licence from home", "Passport", "Immigration documents"],
-    where: "Any Service New Brunswick location",
-    officialSourceUrl: "https://www.gnb.ca/en/topic/driving-transportation/driving-licensing.html",
-    sortOrder: 40,
-    profiles: [INTERNATIONAL_STUDENT, PERMANENT_RESIDENT, WORK_PERMIT_HOLDER, FAMILY],
+    ...licenceShared,
+    detail: `You do not need to exchange your licence while you are in school. ${licenceDetail}`,
+    bring: licenceBring("Your study permit"),
+    keyFacts: [
+      "Students do not need to exchange their licence while in school, but must once they become employed or a permanent resident.",
+      licenceTemporaryGrace,
+      ...licenceFacts,
+    ],
+    profiles: [INTERNATIONAL_STUDENT],
+  },
+  {
+    slug: "drivers-licence-permanent-resident",
+    ...licenceShared,
+    detail: `New residents must get a New Brunswick licence as soon as they move here. ${licenceDetail}`,
+    bring: licenceBring("Your PR card or COPR"),
+    keyFacts: licenceFacts,
+    profiles: [PERMANENT_RESIDENT],
+  },
+  {
+    slug: "drivers-licence-work-permit",
+    ...licenceShared,
+    detail: `If your work permit is valid for more than 6 months, you can drive on your home licence for your first 6 months. ${licenceDetail}`,
+    bring: licenceBring("Your work permit"),
+    keyFacts: [licenceTemporaryGrace, ...licenceFacts],
+    profiles: [WORK_PERMIT_HOLDER],
+  },
+  {
+    slug: "drivers-licence-family",
+    ...licenceShared,
+    title: "Get NB driver's licences for each driver",
+    detail: `Each person who will drive needs their own licence. ${licenceDetail}`,
+    bring: [
+      "Each driver: their original licence from home, with an official English or French translation if needed",
+      "Each driver: their PR card, COPR or permit",
+      "Each driver: one ID and two proofs of NB address",
+    ],
+    keyFacts: [
+      "Permanent residents must get a New Brunswick licence as soon as they move here.",
+      licenceTemporaryGrace,
+      ...licenceFacts,
+    ],
+    profiles: [FAMILY],
   },
 ];
 
