@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 import { PROFILE_TYPES, type ProfileType } from "../../api/checklist";
 
 type Props = {
@@ -22,12 +23,12 @@ export function Hero({ profile, onProfileChange }: Props) {
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">{t("hero.lead")}</p>
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
-            <a
-              href="#steps"
+            <Link
+              to="/checklist"
               className="rounded-lg bg-teal px-6 py-3 font-semibold text-white shadow-sm hover:bg-teal-dark"
             >
               {t("hero.cta")}
-            </a>
+            </Link>
             <a href="#housing" className="rounded font-semibold underline underline-offset-4 hover:text-teal">
               {t("hero.housingLink")}
             </a>

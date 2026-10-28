@@ -7,7 +7,7 @@ export function SiteHeader() {
   const otherLanguage = i18n.language === "fr" ? "en" : "fr";
 
   const links = [
-    { href: "/#steps", label: t("nav.checklist") },
+    { href: "/checklist", label: t("nav.checklist") },
     { href: "/#essentials", label: t("nav.essentials") },
     { href: "/#housing", label: t("nav.housing") },
     { href: "/#community", label: t("nav.community") },
@@ -31,9 +31,15 @@ export function SiteHeader() {
             <ul className="flex flex-wrap gap-x-5 gap-y-1 text-sm font-medium">
               {links.map((link) => (
                 <li key={link.href}>
-                  <a href={link.href} className="rounded hover:text-teal hover:underline">
-                    {link.label}
-                  </a>
+                  {link.href.startsWith("/#") ? (
+                    <a href={link.href} className="rounded hover:text-teal hover:underline">
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link to={link.href} className="rounded hover:text-teal hover:underline">
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>

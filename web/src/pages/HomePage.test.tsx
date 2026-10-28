@@ -4,6 +4,7 @@ import { MemoryRouter } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import "../i18n";
 import type { ChecklistItem } from "../api/checklist";
+import { ChecklistPage } from "./ChecklistPage";
 import { HomePage } from "./HomePage";
 
 const item = (slug: string, title: string): ChecklistItem => ({
@@ -11,7 +12,7 @@ const item = (slug: string, title: string): ChecklistItem => ({
   slug,
   title,
   detail: `${title} detail`,
-  bring: "Passport",
+  bring: ["Passport", "Proof of address"],
   where: "Online",
   cost: slug === "sin" ? "Free" : null,
   timeline: null,
@@ -30,13 +31,11 @@ const byProfile: Record<string, ChecklistItem[]> = {
   FAMILY: [item("sin", "Get your SIN"), item("medicare", "Apply for Medicare"), item("ccb", "Apply for the CCB")],
 };
 
-function renderPage() {
+function renderPage(page = <HomePage />) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
     <QueryClientProvider client={client}>
-      <MemoryRouter>
-        <HomePage />
-      </MemoryRouter>
+      <MemoryRouter>{page}</MemoryRouter>
     </QueryClientProvider>,
   );
 }
@@ -60,6 +59,7 @@ describe("HomePage", () => {
     expect(screen.getByRole("heading", { name: "Open a bank account" })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Get a licence" })).not.toBeInTheDocument();
     expect(screen.getByText("0 of 3 done")).toBeInTheDocument();
+    expect(screen.getAllByRole("listitem").filter((li) => li.textContent === "Proof of address")).toHaveLength(3);
   });
 
   it("shows cost and key facts only for steps that have them", async () => {
@@ -84,6 +84,18 @@ describe("HomePage", () => {
     fireEvent.click(screen.getByRole("radio", { name: /Family moving together/ }));
     expect(await screen.findByRole("heading", { name: "Apply for Medicare" })).toBeInTheDocument();
     expect(localStorage.getItem("nbg.profile")).toBe('"FAMILY"');
+  });
+
+  it("links to the full checklist when there are more than three steps", async () => {
+    renderPage();
+    expect(await screen.findByRole("link", { name: "See all 4 steps" })).toHaveAttribute("href", "/checklist");
+  });
+
+  it("shows every step on the checklist page and shares progress with the home page", async () => {
+    localStorage.setItem("nbg.completed", JSON.stringify(["sin"]));
+    renderPage(<ChecklistPage />);
+    expect(await screen.findByRole("heading", { name: "Get a licence" })).toBeInTheDocument();
+    expect(screen.getByText("1 of 4 done")).toBeInTheDocument();
   });
 
   it("offers a retry when the API is unreachable", async () => {

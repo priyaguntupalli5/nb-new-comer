@@ -65,8 +65,8 @@ model ChecklistItem {
   slug              String         @unique
   title             String
   detail            String
-  bring             String?
-  where             String?
+  bring             String[]       @default([])
+  where            String?
   cost              String?
   timeline          String?
   keyFacts          String[]       @default([]) @map("key_facts")

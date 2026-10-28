@@ -41,6 +41,11 @@ export const en = {
     error: "We could not load your steps. Check your connection and try again.",
     retry: "Try again",
     empty: "We do not have steps for this profile yet.",
+    seeAll: "See all {{count}} steps",
+  },
+  checklist: {
+    heading: "My checklist",
+    lead: "Every step for your first 90 days, in the order you need them. Your progress is saved on this device.",
   },
   essentials: {
     heading: "The essentials, in one place",
