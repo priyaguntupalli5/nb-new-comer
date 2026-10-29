@@ -35,6 +35,26 @@ describe("ChatWidget", () => {
     });
   });
 
+  it("sends at most the 20 most recent messages, starting with a question", async () => {
+    let answerNo = 0;
+    const fetchMock = vi.fn(async () => ndjsonResponse([{ type: "text", text: `Answer ${++answerNo}` }, { type: "done" }]));
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<ChatWidget />);
+    fireEvent.click(screen.getByRole("button", { name: "Ask a question" }));
+    for (let i = 1; i <= 11; i++) {
+      fireEvent.change(screen.getByLabelText("Your question"), { target: { value: `Question ${i}` } });
+      fireEvent.click(screen.getByRole("button", { name: "Send" }));
+      await screen.findByText(`Answer ${i}`);
+    }
+
+    const [, init] = fetchMock.mock.calls[10] as unknown as [string, RequestInit];
+    const sent = JSON.parse(init.body as string).messages as { role: string; content: string }[];
+    expect(sent.length).toBeLessThanOrEqual(20);
+    expect(sent[0].role).toBe("user");
+    expect(sent.at(-1)).toEqual({ role: "user", content: "Question 11" });
+  });
+
   it("explains when the assistant is not set up and keeps the question to retry", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => new Response("", { status: 503 })));
 

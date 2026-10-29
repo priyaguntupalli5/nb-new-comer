@@ -4,6 +4,14 @@ import { ChatError, streamChat, type ChatMessage } from "../../api/chat";
 import { readStoredProfile } from "../../lib/checklist-state";
 
 const URL_PATTERN = /(https?:\/\/[^\s)]+)/g;
+// The API accepts up to 20 messages; older turns are dropped so long conversations keep working.
+const MAX_HISTORY = 20;
+
+// Keeps the most recent messages, starting on a question so the history is valid for the API.
+function recentHistory(history: ChatMessage[]) {
+  const recent = history.slice(-MAX_HISTORY);
+  return recent[0]?.role === "assistant" ? recent.slice(1) : recent;
+}
 
 // Turns bare URLs in an answer into links; everything else stays plain text.
 function Linkified({ text }: { text: string }) {
@@ -52,7 +60,7 @@ export function ChatWidget() {
 
     try {
       await streamChat(
-        { messages: history, profile: readStoredProfile(), language: i18n.language },
+        { messages: recentHistory(history), profile: readStoredProfile(), language: i18n.language },
         (text) =>
           setMessages((prev) => {
             const last = prev[prev.length - 1];

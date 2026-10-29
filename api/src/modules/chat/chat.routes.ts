@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 import { ProfileType } from "@prisma/client";
 import { Router } from "express";
 import { rateLimit } from "express-rate-limit";
@@ -8,7 +9,9 @@ import { buildChecklistKnowledge, PROFILE_LABELS } from "./checklist-knowledge.j
 
 export const chatRouter = Router();
 
-const MODEL = "claude-opus-5-5";
+// Claude runs on Amazon Bedrock through the bedrock-runtime endpoint (the one the Bedrock console playground uses).
+// Haiku 4.5 must be called through an inference profile: the catalog model ID with a "global." or "us." prefix.
+const MODEL = process.env.BEDROCK_MODEL_ID || "global.anthropic.claude-haiku-4-5-20251001-v1:0";
 
 const SYSTEM_PROMPT = `You are the assistant for NB Newcomer Guide, a website that helps newcomers through their first 90 days in New Brunswick, Canada. People ask you about the steps in their checklist: what to bring, where to go, what it costs, how long it takes, and what to watch out for.
 
@@ -27,10 +30,11 @@ Latency-sensitive; begin your visible answer immediately.`;
 const bodySchema = z.object({
   messages: z
     .array(
-      z.object({
-        role: z.enum(["user", "assistant"]),
-        content: z.string().trim().min(1).max(2000),
-      }),
+      // Questions are capped at what the input box allows; earlier answers are sent back as history and can be longer.
+      z.discriminatedUnion("role", [
+        z.object({ role: z.literal("user"), content: z.string().trim().min(1).max(2000) }),
+        z.object({ role: z.literal("assistant"), content: z.string().trim().min(1).max(10000) }),
+      ]),
     )
     .min(1)
     .max(20)
@@ -42,10 +46,12 @@ const bodySchema = z.object({
 // Public endpoint that costs money per call, so keep each visitor to a reasonable pace.
 const chatLimiter = rateLimit({ windowMs: 60_000, limit: 10, standardHeaders: "draft-8", legacyHeaders: false });
 
-let client: Anthropic | undefined;
+let client: AnthropicBedrock | undefined;
 
+// AWS credentials come from the standard chain (env vars, profile, SSO, or an IAM role on AWS),
+// so the region is the one setting we can check up front.
 function isConfigured() {
-  return Boolean(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
+  return Boolean(process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION);
 }
 
 // Streams the answer as newline-delimited JSON: {"type":"text","text":...} chunks, then "done" or "error".
@@ -56,7 +62,7 @@ chatRouter.post("/", chatLimiter, async (req, res) => {
     res.status(503).json({ error: "The assistant is not set up yet" });
     return;
   }
-  client ??= new Anthropic();
+  client ??= new AnthropicBedrock();
 
   const knowledge = await buildChecklistKnowledge();
   const context = [
@@ -74,13 +80,10 @@ chatRouter.post("/", chatLimiter, async (req, res) => {
   res.on("close", () => abort.abort());
 
   try {
-    const stream = client.beta.messages.stream(
+    const stream = client.messages.stream(
       {
         model: MODEL,
         max_tokens: 8000,
-        betas: ["server-side-fallback-2026-07-01"],
-        fallbacks: "default",
-        output_config: { effort: "low" },
         system: [
           { type: "text", text: SYSTEM_PROMPT },
           {
@@ -88,8 +91,10 @@ chatRouter.post("/", chatLimiter, async (req, res) => {
             text: `<checklist>\n${knowledge}\n</checklist>`,
             cache_control: { type: "ephemeral" },
           },
+          // After the cache breakpoint, so a different category or language doesn't invalidate the cached checklist.
+          { type: "text", text: context },
         ],
-        messages: [...messages, { role: "system", content: context }],
+        messages,
       },
       { signal: abort.signal },
     );
@@ -107,8 +112,8 @@ chatRouter.post("/", chatLimiter, async (req, res) => {
     if (err instanceof Anthropic.RateLimitError) {
       logger.warn({ err }, "Claude rate limit reached");
       send({ type: "error", error: "busy" });
-    } else if (err instanceof Anthropic.AuthenticationError) {
-      logger.error({ err }, "Claude credentials were rejected");
+    } else if (err instanceof Anthropic.AuthenticationError || err instanceof Anthropic.PermissionDeniedError) {
+      logger.error({ err }, "AWS credentials were rejected, or Bedrock model access is not enabled for this model");
       send({ type: "error", error: "unavailable" });
     } else {
       logger.error({ err }, "Chat request failed");
