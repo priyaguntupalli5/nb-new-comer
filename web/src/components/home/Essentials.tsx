@@ -4,7 +4,7 @@ import { Icon, type IconName } from "../Icon";
 import { SmartLink } from "../SmartLink";
 
 const cards: { key: string; icon: IconName; to: string }[] = [
-  { key: "sin", icon: "idCard", to: OFFICIAL_LINKS.sin },
+  { key: "sin", icon: "idCard", to: "/essentials/sin-id" },
   { key: "health", icon: "heart", to: OFFICIAL_LINKS.medicare },
   { key: "driving", icon: "car", to: OFFICIAL_LINKS.driving },
   { key: "banking", icon: "bank", to: "/essentials/banking" },

@@ -52,7 +52,7 @@ export const fr: Messages = {
   essentials: {
     heading: "L'essentiel, au même endroit",
     lead: "De courtes explications, avec un lien vers la source officielle sur chaque fiche.",
-    sin: { title: "NAS et pièces d'identité", body: "Ce qu'est un numéro d'assurance sociale et quels documents garder sur vous.", link: "Source officielle" },
+    sin: { title: "NAS et pièces d'identité", body: "Ce qu'est un numéro d'assurance sociale et quels documents garder sur vous.", link: "Lire le guide" },
     health: { title: "Carte d'assurance-maladie", body: "Qui est admissible, comment présenter une demande et comment trouver un médecin de famille.", link: "Source officielle" },
     driving: { title: "Permis de conduire", body: "Utiliser le permis de votre pays et les étapes pour obtenir celui du Nouveau-Brunswick.", link: "Source officielle" },
     banking: { title: "Services bancaires", body: "Les comptes pour nouveaux arrivants et étudiants des cinq grandes banques, côte à côte.", link: "Comparer 5 banques" },
@@ -113,6 +113,13 @@ export const fr: Messages = {
       unavailable: "Une erreur s'est produite. Veuillez réessayer.",
       "not-configured": "L'assistant n'est pas encore disponible. Utilisez la liste et les liens officiels pour le moment.",
     },
+  },
+  article: {
+    back: "Tout l'essentiel",
+    loading: "Chargement du guide…",
+    error: "Nous n'avons pas pu charger ce guide. Vérifiez votre connexion et réessayez.",
+    sources: "Sources officielles",
+    lastChecked: "Dernière vérification : {{date}}. Les règles changent; confirmez toujours sur la page officielle.",
   },
   comingSoon: {
     title: "Cette page arrive bientôt",

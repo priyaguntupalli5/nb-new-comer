@@ -56,6 +56,21 @@ describe("API", () => {
     vi.unstubAllEnvs();
   });
 
+  it("serves an essentials article with its official sources", async () => {
+    const res = await request(app).get("/api/content/essentials/sin-id");
+    expect(res.status).toBe(200);
+    expect(res.body.title).toBe("SIN and ID");
+    expect(res.body.lastChecked).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(res.body.sources.length).toBeGreaterThan(0);
+    expect(res.body.body).toContain("## What a SIN is");
+  });
+
+  it("returns 404 for an unknown article and rejects path tricks", async () => {
+    expect((await request(app).get("/api/content/essentials/banking")).status).toBe(404);
+    expect((await request(app).get("/api/content/essentials/..%2F..%2F.env")).status).toBe(404);
+    expect((await request(app).get("/api/content/secrets/sin-id")).status).toBe(400);
+  });
+
   it("returns 404 for unknown routes", async () => {
     const res = await request(app).get("/api/nope");
     expect(res.status).toBe(404);

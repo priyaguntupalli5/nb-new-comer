@@ -50,7 +50,7 @@ export const en = {
   essentials: {
     heading: "The essentials, in one place",
     lead: "Short explainers, with a link to the official source on every card.",
-    sin: { title: "SIN and ID", body: "What a Social Insurance Number is, and which documents to keep with you.", link: "Official source" },
+    sin: { title: "SIN and ID", body: "What a Social Insurance Number is, and which documents to keep with you.", link: "Read the guide" },
     health: { title: "Health card (Medicare)", body: "Who qualifies, how to apply, and how to find a family doctor.", link: "Official source" },
     driving: { title: "Driver's licence", body: "Using your licence from home, and the steps to get a New Brunswick one.", link: "Official source" },
     banking: { title: "Banking", body: "Newcomer and student accounts from the five big banks, side by side.", link: "Compare 5 banks" },
@@ -111,6 +111,13 @@ export const en = {
       unavailable: "Something went wrong. Please try again.",
       "not-configured": "The assistant is not available yet. Please use the checklist and official links for now.",
     },
+  },
+  article: {
+    back: "All essentials",
+    loading: "Loading the guide…",
+    error: "We could not load this guide. Check your connection and try again.",
+    sources: "Official sources",
+    lastChecked: "Last checked: {{date}}. Rules change, so always confirm on the official page.",
   },
   comingSoon: {
     title: "This page is on its way",
