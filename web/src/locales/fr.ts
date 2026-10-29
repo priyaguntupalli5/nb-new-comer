@@ -53,7 +53,7 @@ export const fr: Messages = {
     heading: "L'essentiel, au même endroit",
     lead: "De courtes explications, avec un lien vers la source officielle sur chaque fiche.",
     sin: { title: "NAS et pièces d'identité", body: "Ce qu'est un numéro d'assurance sociale et quels documents garder sur vous.", link: "Lire le guide" },
-    health: { title: "Carte d'assurance-maladie", body: "Qui est admissible, comment présenter une demande et comment trouver un médecin de famille.", link: "Source officielle" },
+    health: { title: "Carte d'assurance-maladie", body: "Qui est admissible, comment présenter une demande et comment trouver un médecin de famille.", link: "Lire le guide" },
     driving: { title: "Permis de conduire", body: "Utiliser le permis de votre pays et les étapes pour obtenir celui du Nouveau-Brunswick.", link: "Source officielle" },
     banking: { title: "Services bancaires", body: "Les comptes pour nouveaux arrivants et étudiants des cinq grandes banques, côte à côte.", link: "Comparer 5 banques" },
     phone: { title: "Forfaits de téléphone", body: "Options prépayées, postpayées et économiques, selon la durée de votre séjour.", link: "Comparer les fournisseurs" },

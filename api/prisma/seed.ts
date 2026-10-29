@@ -112,7 +112,7 @@ const medicareBeforeYouApply = [
 const medicareAfterYouApply = [
   "Tell Medicare when your status, permit or address changes, or you could lose your coverage.",
   "No letter after 14 weeks? Call Service New Brunswick at 1-888-762-8600.",
-  "To find a family doctor, register with Patient Connect NB, online or by calling 811. Waits can be long.",
+  "No family doctor yet? Register with NB Health Link at nbhealthlink.ca. Until then, call 811 any time to talk to a nurse.",
 ];
 
 // sortOrder is global; each profile sees its own items in this order, and the first three are its urgent steps.

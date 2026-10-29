@@ -13,6 +13,8 @@ sources:
     url: https://www.canada.ca/en/employment-social-development/services/sin/fraud-data-breaches.html
   - title: Photo identification card (Service New Brunswick)
     url: https://www.gnb.ca/en/topic/driving-transportation/driving-licensing/photo-id.html
+  - title: Your New Brunswick Medicare card
+    url: https://www2.gnb.ca/content/gnb/en/departments/health/DrugPlans/content/medicare/YourNewBrunswickMedicareCard.html
   - title: Permanent resident card (IRCC)
     url: https://www.canada.ca/en/immigration-refugees-citizenship/services/permanent-residents/card.html
   - title: Travelling outside Canada as a permanent resident
@@ -99,6 +101,8 @@ Carry one photo ID issued in New Brunswick:
 - It costs $48. A replacement costs $15.
 - Apply at any Service New Brunswick centre. Bring one ID and two proofs of your NB address.
 - You get a 30-day temporary paper the same day, but that paper is not proof of ID. The card arrives in the mail in about 14 days.
+
+Also carry your **Medicare card** once you have it. It is not ID, but you must show it every time you see a doctor or go to a hospital.
 
 Your passport, permit and PR card are hard to replace. Bring them when a step asks for them, and keep them somewhere safe the rest of the time.
 
