@@ -2,9 +2,6 @@
 export const CONTENT_CHECKED_AT = "2026-10-27";
 
 export const OFFICIAL_LINKS = {
-  sin: "https://www.canada.ca/en/employment-social-development/services/sin.html",
-  medicare: "https://www2.gnb.ca/content/gnb/en/departments/health/Medicare.html",
-  driving: "https://www.gnb.ca/en/topic/driving-transportation/driving-licensing.html",
   transit: "https://www.gnb.ca/en/topic/driving-transportation.html",
   renting: "https://www.gnb.ca/en/topic/family-home-community/housing-property.html",
   tenantRights: "https://www.gnb.ca/en/topic/family-home-community/housing-property/renters.html",

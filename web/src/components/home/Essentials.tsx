@@ -6,7 +6,7 @@ import { SmartLink } from "../SmartLink";
 const cards: { key: string; icon: IconName; to: string }[] = [
   { key: "sin", icon: "idCard", to: "/essentials/sin-id" },
   { key: "health", icon: "heart", to: "/essentials/health-card" },
-  { key: "driving", icon: "car", to: OFFICIAL_LINKS.driving },
+  { key: "driving", icon: "car", to: "/essentials/drivers-licence" },
   { key: "banking", icon: "bank", to: "/essentials/banking" },
   { key: "phone", icon: "phone", to: "/essentials/phone-plans" },
   { key: "transit", icon: "bus", to: OFFICIAL_LINKS.transit },
