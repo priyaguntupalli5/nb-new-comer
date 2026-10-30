@@ -76,8 +76,28 @@ model ChecklistItem {
   profiles          ProfileItem[]
   progress          UserProgress[]
   reminders         Reminder[]
+  translations      ChecklistItemTranslation[]
 
   @@map("checklist_items")
+}
+
+// The item's text in another language. English stays on ChecklistItem; a missing or outdated translation
+// falls back to it. sourceHash is the fingerprint of the English the translation was made from.
+model ChecklistItemTranslation {
+  checklistItemId String        @map("checklist_item_id")
+  locale          String
+  sourceHash      String        @map("source_hash")
+  title           String
+  detail          String
+  bring           String[]      @default([])
+  where           String?
+  cost            String?
+  timeline        String?
+  keyFacts        String[]      @default([]) @map("key_facts")
+  checklistItem   ChecklistItem @relation(fields: [checklistItemId], references: [id], onDelete: Cascade)
+
+  @@id([checklistItemId, locale])
+  @@map("checklist_item_translations")
 }
 
 model ProfileItem {

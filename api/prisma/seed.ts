@@ -1,4 +1,5 @@
 import { PrismaClient, ProfileType } from "@prisma/client";
+import { checklistFingerprint } from "../src/lib/fingerprint.js";
 
 const prisma = new PrismaClient();
 
@@ -117,6 +118,123 @@ const medicareAfterYouApply = [
   "No family doctor yet? Register with NB Health Link at nbhealthlink.ca. Until then, call 811 any time to talk to a nurse.",
 ];
 
+// French text for each card, shown when the site is in French. Uses the terms the federal and NB governments use
+// in French: NAS, carte de RP, CRP, Service Nouveau-Brunswick, Assurance-maladie, ARC.
+type French = {
+  title: string;
+  detail: string;
+  bring: string[];
+  where?: string;
+  cost?: string;
+  timeline?: string;
+  keyFacts: string[];
+};
+
+const sinSharedFr = {
+  title: "Obtenir votre numéro d'assurance sociale (NAS)",
+  where: "En ligne, par la poste ou en personne dans un Centre Service Canada, sur rendez-vous",
+  cost: "Gratuit",
+};
+const sinDetailFr =
+  "Un numéro à 9 chiffres dont vous avez besoin pour travailler au Canada, y compris à temps partiel, et pour recevoir des prestations du gouvernement.";
+const sinSecondIdFr =
+  "Une deuxième pièce d'identité avec votre nom légal complet et votre date de naissance : passeport (de n'importe quel pays), permis de conduire canadien, carte d'identité provinciale ou autre pièce d'identité du gouvernement canadien";
+const sinTemporaryTimelineFr = "Environ 5 jours ouvrables en ligne, environ 20 par la poste, le jour même en personne";
+const sinPermanentTimelineFr = "Le jour même en personne. En ligne, c'est plus rapide que par la poste";
+const sinMayWorkFr = (permit: string) =>
+  `${permit} qui indique que vous « pouvez travailler » ou « pouvez accepter un emploi » au Canada (en anglais : « may work » ou « may accept employment »)`;
+const sinTemporaryFactsFr = [
+  "Votre NAS commence par 9 et expire le même jour que votre permis. Mettez-le à jour chaque fois que vous obtenez un nouveau permis.",
+  "Vous avez demandé la prolongation de votre permis avant son expiration? Vous pouvez continuer à travailler avec votre NAS expiré jusqu'à la décision d'IRCC.",
+  "Vous pouvez commencer à travailler dès que vous avez présenté votre demande, sans attendre votre numéro.",
+];
+const sinApplyFactsFr = [
+  "Votre deuxième pièce d'identité doit être délivrée par un gouvernement canadien ou être un passeport. Un permis de conduire d'un autre pays ne compte pas.",
+  "Vous ne recevrez pas de carte en plastique. Service Canada vous envoie plutôt une lettre de confirmation.",
+  "Les documents doivent être en français ou en anglais, ou traduits. Un membre de votre famille ne peut pas faire la traduction.",
+  "Si vous oubliez un document, vous ne pouvez pas modifier votre demande. Vous devez en présenter une nouvelle.",
+];
+const sinProtectFactsFr = [
+  "Donnez votre NAS seulement à votre employeur une fois embauché, à votre banque et au gouvernement. Les propriétaires, les entreprises de téléphonie et les demandes d'emploi ne peuvent pas l'exiger.",
+  "Ne donnez jamais votre NAS à quelqu'un qui vous appelle, vous texte ou vous écrit. Méfiez-vous des messages qui menacent de bloquer ou d'annuler votre NAS : c'est une arnaque.",
+  "Ne gardez pas votre lettre de NAS dans votre portefeuille. Rangez-la en lieu sûr à la maison.",
+];
+
+const bankSharedFr = {
+  title: "Ouvrir un compte bancaire",
+  where: "N'importe quelle succursale bancaire. Vous devrez peut-être vous présenter en personne la première fois",
+  keyFacts: [
+    "Apportez les originaux. Les banques n'acceptent pas de copies de vos pièces d'identité.",
+    "Le passeport n'est pas obligatoire. Deux documents de la liste acceptée par la banque suffisent, par exemple un permis de conduire canadien et une facture de services publics.",
+    "Option 2 : pas encore de document avec votre adresse? Apportez une pièce d'identité avec votre nom et votre date de naissance, et demandez à une personne en qui la banque a confiance, comme un client existant ou un membre respecté de la communauté, de confirmer votre identité.",
+    "Un bail ne figure pas sur la liste acceptée. Si vous n'avez qu'un passeport et un permis, renseignez-vous auprès de la banque sur l'option 2 ou sur les autres documents qu'elle accepte.",
+    "Demandez un compte à frais modiques ou sans frais en le nommant. Un compte à frais modiques coûte 4 $ ou moins par mois, comprend au moins 18 opérations de débit et ne peut pas exiger de solde minimum.",
+    "Une banque ne peut vous refuser que pour des raisons précises, comme un soupçon de fraude. Si elle refuse, elle doit vous le dire par écrit et vous expliquer comment porter plainte.",
+    "Votre banque peut vous demander votre NAS, car elle doit déclarer les intérêts que vous gagnez.",
+    "Comparez les comptes avec l'Outil de comparaison des comptes bancaires de l'Agence de la consommation en matière financière du Canada.",
+  ],
+};
+const bankDetailFr =
+  "Vous avez besoin d'un compte canadien pour être payé, payer votre loyer et recevoir les paiements du gouvernement.";
+const bankAddressDocsFr = [
+  "Un document original avec votre nom et votre adresse, comme une facture canadienne récente de services publics, un relevé bancaire ou de carte de crédit, ou un relevé de prestations ou d'impôt du gouvernement",
+  "Pas encore de document avec votre adresse? Vous pouvez quand même ouvrir un compte : voyez l'option 2 sous « À savoir »",
+];
+const bankNewcomerCostFr = "0 $ par mois dans votre première année au Canada, puis 4 $ ou moins pour un compte à frais modiques";
+
+const licenceSharedFr = {
+  title: "Échanger ou obtenir un permis de conduire",
+  where: "N'importe quel centre de Service Nouveau-Brunswick",
+  cost: "Jusqu'à 100 $ pour le permis. Si vous devez passer un examen sur route, 25 $ plus la TVH",
+  timeline:
+    "Vous recevez un permis temporaire de 30 jours lors de votre demande. Votre carte est envoyée par la poste dans un délai d'environ 14 jours",
+};
+const licenceDetailFr =
+  "Selon votre pays, vous échangez votre permis ou vous passez tous les examens. Un permis du N.-B. est aussi une pièce d'identité officielle avec photo.";
+const licenceBringFr = (statusDocument: string) => [
+  "Votre permis original de votre pays",
+  "Une traduction officielle en français ou en anglais, s'il est dans une autre langue (d'une agence de traduction, ou un permis de conduire international)",
+  statusDocument,
+  "Une pièce d'identité et deux preuves d'adresse au N.-B.",
+];
+const licenceTemporaryGraceFr =
+  "Avec un permis de travail ou d'études valide pour plus de 6 mois, vous pouvez conduire avec le permis valide de votre pays pendant au plus 6 mois à partir de votre arrivée au Canada.";
+const licenceFactsFr = [
+  "Aucun examen écrit ni sur route si votre permis vient de : l'Allemagne, l'Australie, l'Autriche, la Belgique, la Corée du Sud, le Danemark, l'Espagne, la France, l'île de Man, l'Irlande, l'Italie, le Japon, la Norvège, la Nouvelle-Zélande, les Pays-Bas, le Portugal, le Royaume-Uni (Angleterre, Écosse, pays de Galles), la Suède, la Suisse, Taïwan ou l'Ukraine.",
+  "Les permis des autres provinces canadiennes et des États américains sont échangés classe pour classe, sans examen.",
+  "Si votre permis vient d'un autre pays, vous passez tous les examens : un examen de la vue, un examen théorique écrit et un examen sur route.",
+  "Comme pièce d'identité, une carte de RP, un permis d'études ou de travail, ou un passeport étranger avec vos documents d'immigration sont acceptés. Une carte d'assurance-maladie ou une carte étudiante ne l'est pas.",
+  "Vos deux preuves d'adresse doivent venir de deux organisations différentes, par exemple votre bail et une facture de services publics.",
+  "Taïwan : apportez aussi une traduction anglaise authentifiée par le Bureau économique et culturel de Taipei à Toronto, et un certificat de vérification délivré au cours des 3 derniers mois. Ukraine : les permis de catégorie B ou BE exigent un examen de la vue.",
+  "L'examen théorique peut se faire en ligne ou dans un centre de Service Nouveau-Brunswick. Attendez au moins 4 jours ouvrables après l'avoir réussi avant de vous présenter à un centre pour l'étape suivante.",
+  "Réservez l'examen sur route en ligne ou au 1-888-762-8600. Venez avec un conducteur titulaire d'un permis complet depuis au moins 3 ans, et un véhicule immatriculé et assuré.",
+  "Vous échangez le permis de votre pays le jour de votre examen sur route? Arrivez 45 minutes à l'avance.",
+  "Le Nouveau-Brunswick conserve le permis de votre pays pendant 5 ans après l'échange.",
+  "Des questions? Appelez la Direction des véhicules à moteur au 506-453-2410.",
+];
+
+const medicareWhereFr =
+  "En ligne, ou avec le formulaire papier envoyé par la poste ou par courriel, ou déposé dans un centre de Service Nouveau-Brunswick";
+const medicareTimelineFr = "De 10 à 12 semaines. Vous recevez une lettre avec votre date de début, puis votre carte";
+const medicareEntryStampFr =
+  "La page de votre passeport avec votre dernier timbre d'entrée (obligatoire, même si vous utilisez une autre pièce d'identité ci-dessus)";
+const medicarePrivateFr = "D'ici le début de votre couverture, pensez à une assurance maladie privée.";
+const medicareBeforeYouApplyFr = [
+  "Vous ne pouvez présenter une demande qu'après avoir emménagé au Nouveau-Brunswick.",
+  "Le passeport n'est pas la seule pièce d'identité acceptée. Vous pouvez aussi utiliser un certificat de naissance canadien ou traduit, un permis de conduire ou une carte d'identité du N.-B., une carte étudiante, une carte d'employé, un certificat de citoyenneté, une carte de statut des Premières Nations, un certificat de baptême indiquant le lieu et la date de naissance, ou une carte d'assurance-maladie d'une autre province.",
+  "La page du timbre d'entrée n'est pas votre pièce d'identité. Elle indique à l'Assurance-maladie quand vous êtes arrivé au Canada; elle est donc exigée en plus de votre pièce d'identité.",
+  "Pas de timbre d'entrée dans votre passeport? Appelez le 1-888-762-8600 avant de présenter votre demande et demandez quoi envoyer à la place.",
+  "Votre preuve d'adresse doit indiquer votre nom et votre adresse au N.-B. : par exemple un bail, une facture de services publics, un talon de paie, une lettre de l'employeur ou une police d'assurance locataire.",
+  "Envoyez des photocopies, pas les originaux. Chaque document ne peut servir qu'à une seule exigence, et une demande à laquelle il manque un document n'est pas traitée.",
+  "Présentez une seule demande. N'envoyez pas de formulaire papier si vous avez déjà fait votre demande en ligne.",
+  "L'Assurance-maladie peut demander d'autres documents, par exemple de pays où vous avez vécu, travaillé ou étudié, ou une preuve de changement de nom.",
+];
+const medicareAfterYouApplyFr = [
+  "Informez l'Assurance-maladie de tout changement de statut, de permis ou d'adresse, sinon vous pourriez perdre votre couverture.",
+  "Pas de lettre après 14 semaines? Appelez Service Nouveau-Brunswick au 1-888-762-8600.",
+  "Pas encore de médecin de famille? Inscrivez-vous à NB Health Link sur nbhealthlink.ca. En attendant, composez le 811 à tout moment pour parler à une infirmière.",
+];
+
 // sortOrder is global; each profile sees its own items in this order, and the first three are its urgent steps.
 const items = [
   {
@@ -132,6 +250,18 @@ const items = [
       ...sinApplyFacts,
       ...sinProtectFacts,
     ],
+    fr: {
+      ...sinSharedFr,
+      detail: sinDetailFr,
+      bring: [sinMayWorkFr("Un permis d'études"), sinSecondIdFr],
+      timeline: sinTemporaryTimelineFr,
+      keyFacts: [
+        "Si votre permis d'études n'indique pas que vous pouvez travailler, communiquez avec IRCC pour obtenir un permis modifié avant de présenter votre demande. Un courriel d'IRCC n'est pas accepté.",
+        ...sinTemporaryFactsFr,
+        ...sinApplyFactsFr,
+        ...sinProtectFactsFr,
+      ],
+    },
     profiles: [INTERNATIONAL_STUDENT],
   },
   {
@@ -145,6 +275,20 @@ const items = [
       ...sinApplyFacts,
       ...sinProtectFacts,
     ],
+    fr: {
+      ...sinSharedFr,
+      detail: `${sinDetailFr} En tant que résident permanent, votre NAS n'expire pas.`,
+      bring: [
+        "Carte de RP, ou votre Confirmation de résidence permanente (CRP) si vous êtes devenu résident permanent il y a moins d'un an",
+        sinSecondIdFr,
+      ],
+      timeline: sinPermanentTimelineFr,
+      keyFacts: [
+        "Vous aviez déjà un NAS commençant par 9 grâce à un permis d'études ou de travail? Mettez à jour votre dossier de NAS avec votre nouveau statut de RP.",
+        ...sinApplyFactsFr,
+        ...sinProtectFactsFr,
+      ],
+    },
     profiles: [PERMANENT_RESIDENT],
   },
   {
@@ -159,6 +303,18 @@ const items = [
       ...sinApplyFacts,
       ...sinProtectFacts,
     ],
+    fr: {
+      ...sinSharedFr,
+      detail: sinDetailFr,
+      bring: [sinMayWorkFr("Un permis de travail"), sinSecondIdFr],
+      timeline: sinTemporaryTimelineFr,
+      keyFacts: [
+        "Apportez le permis lui-même. Un courriel d'IRCC n'est pas accepté.",
+        ...sinTemporaryFactsFr,
+        ...sinApplyFactsFr,
+        ...sinProtectFactsFr,
+      ],
+    },
     profiles: [WORK_PERMIT_HOLDER],
   },
   {
@@ -179,6 +335,24 @@ const items = [
       ...sinApplyFacts,
       ...sinProtectFacts,
     ],
+    fr: {
+      ...sinSharedFr,
+      title: "Obtenir un NAS pour chaque adulte qui travaillera",
+      detail:
+        "Un numéro à 9 chiffres dont chaque personne a besoin pour travailler au Canada et recevoir des prestations du gouvernement. Chaque personne présente sa demande avec ses propres documents.",
+      bring: [
+        "Chaque personne : sa carte de RP (ou sa CRP, dans l'année qui suit l'obtention de la résidence permanente), ou son permis de travail ou d'études",
+        `Chaque adulte : ${sinSecondIdFr.charAt(0).toLowerCase()}${sinSecondIdFr.slice(1)}`,
+      ],
+      timeline: sinPermanentTimelineFr,
+      keyFacts: [
+        "Les résidents permanents obtiennent un NAS qui n'expire pas.",
+        "Seuls les adultes qui ont atteint l'âge de la majorité ont besoin d'une deuxième pièce d'identité. Les enfants n'ont besoin que de leur document de statut.",
+        "Les membres de la famille titulaires d'un permis de travail ou d'études ont besoin d'un permis qui indique qu'ils « peuvent travailler » ou « peuvent accepter un emploi » (« may work » ou « may accept employment »). Leur NAS commence par 9 et expire le même jour que leur permis.",
+        ...sinApplyFactsFr,
+        ...sinProtectFactsFr,
+      ],
+    },
     profiles: [FAMILY],
   },
   {
@@ -203,6 +377,29 @@ const items = [
       "Until your Medicare starts, make sure a school health plan or private insurance covers you.",
       ...medicareAfterYouApply,
     ],
+    fr: {
+      title: "Vérifier votre couverture santé",
+      detail:
+        "Les étudiants étrangers à temps plein peuvent obtenir l'Assurance-maladie du Nouveau-Brunswick, mais la couverture met des semaines à commencer. Demandez à votre bureau des étudiants internationaux ce qui vous couvre d'ici là, pour ne jamais vous retrouver sans protection.",
+      bring: [
+        "Permis d'études",
+        "Une pièce d'identité, comme la page photo de votre passeport, votre carte étudiante, votre permis de conduire du N.-B. ou votre certificat de naissance",
+        medicareEntryStampFr,
+        "Une preuve d'inscription à temps plein pour toute l'année scolaire",
+        "Une preuve d'adresse au N.-B., comme votre bail ou une facture de services publics",
+      ],
+      where:
+        "D'abord votre bureau des étudiants internationaux, puis la demande d'Assurance-maladie en ligne ou avec le formulaire papier",
+      cost: "Demande d'Assurance-maladie gratuite",
+      timeline: medicareTimelineFr,
+      keyFacts: [
+        "Vous devez étudier à temps plein pendant toute l'année scolaire. Les étudiants à temps partiel et les étudiants en échange ne sont pas admissibles à l'Assurance-maladie.",
+        "Votre lettre d'acceptation n'est pas acceptée. Demandez à votre établissement une preuve d'inscription pour une année scolaire complète.",
+        ...medicareBeforeYouApplyFr,
+        "D'ici le début de votre Assurance-maladie, assurez-vous d'être couvert par le régime de santé de votre établissement ou par une assurance privée.",
+        ...medicareAfterYouApplyFr,
+      ],
+    },
     officialSourceUrl: MEDICARE_APPLY_URL,
     sortOrder: 20,
     profiles: [INTERNATIONAL_STUDENT],
@@ -228,6 +425,26 @@ const items = [
       "Until your coverage starts, consider private health insurance.",
       ...medicareAfterYouApply,
     ],
+    fr: {
+      title: "Demander votre carte d'assurance-maladie",
+      detail:
+        "Votre assurance maladie provinciale. En tant que résident permanent, vous y avez droit dès que le Nouveau-Brunswick est votre résidence permanente. Faites la demande dès votre arrivée.",
+      bring: [
+        "Carte de RP (recto verso), CRP ou fiche relative au droit d'établissement",
+        "Une pièce d'identité, comme la page photo de votre passeport, votre permis de conduire du N.-B., votre certificat de naissance ou votre carte d'employé",
+        medicareEntryStampFr,
+        "Une preuve d'adresse au N.-B., comme votre bail, une facture de services publics ou un talon de paie",
+      ],
+      where: medicareWhereFr,
+      cost: "Demande gratuite",
+      timeline: medicareTimelineFr,
+      keyFacts: [
+        "Posséder une propriété ou payer des impôts ici ne suffit pas. Le Nouveau-Brunswick doit être votre résidence permanente et principale.",
+        ...medicareBeforeYouApplyFr,
+        medicarePrivateFr,
+        ...medicareAfterYouApplyFr,
+      ],
+    },
     officialSourceUrl: MEDICARE_APPLY_URL,
     sortOrder: 25,
     profiles: [PERMANENT_RESIDENT],
@@ -254,6 +471,28 @@ const items = [
       "When you get a new permit, send it to Medicare so your coverage is not cut off.",
       ...medicareAfterYouApply,
     ],
+    fr: {
+      title: "Demander votre carte d'assurance-maladie",
+      detail:
+        "Votre assurance maladie provinciale. Vérifiez que votre permis de travail vous y donne droit, puis faites la demande dès votre arrivée.",
+      bring: [
+        "Permis de travail valide",
+        "Une pièce d'identité, comme la page photo de votre passeport, votre carte d'employé, votre permis de conduire du N.-B. ou votre certificat de naissance",
+        medicareEntryStampFr,
+        "Une preuve d'adresse au N.-B., comme votre bail, un talon de paie ou une lettre de votre employeur",
+      ],
+      where: medicareWhereFr,
+      cost: "Demande gratuite",
+      timeline: medicareTimelineFr,
+      keyFacts: [
+        "Le ministère de la Santé a indiqué que votre permis de travail doit être valide pendant 12 mois ou plus; les travailleurs saisonniers ne sont donc généralement pas admissibles. Appelez le 1-888-762-8600 pour le confirmer avant de présenter votre demande.",
+        "Si votre permis de travail arrive à expiration, joignez la preuve d'IRCC que vous avez demandé sa prolongation, comme l'accusé de réception.",
+        ...medicareBeforeYouApplyFr,
+        medicarePrivateFr,
+        "Quand vous obtenez un nouveau permis, envoyez-le à l'Assurance-maladie pour que votre couverture ne soit pas interrompue.",
+        ...medicareAfterYouApplyFr,
+      ],
+    },
     officialSourceUrl: MEDICARE_DOCUMENTS_URL,
     sortOrder: 26,
     profiles: [WORK_PERMIT_HOLDER],
@@ -280,6 +519,28 @@ const items = [
       "Until your coverage starts, consider private health insurance for the whole family.",
       ...medicareAfterYouApply,
     ],
+    fr: {
+      title: "Demander l'Assurance-maladie pour votre famille",
+      detail:
+        "L'assurance maladie provinciale pour chaque membre de votre famille. Une seule demande peut inclure tout le monde. Faites la demande dès votre arrivée.",
+      bring: [
+        "Chaque personne : carte de RP ou CRP, son permis, ou un certificat de naissance canadien pour les enfants nés au Canada",
+        "Chaque personne : une pièce d'identité, comme la page photo de son passeport, son certificat de naissance, sa carte étudiante ou sa carte d'identité du N.-B.",
+        "Chaque personne : la page de son passeport avec son dernier timbre d'entrée (obligatoire, même si elle utilise une autre pièce d'identité)",
+        "Vous seulement : une preuve d'adresse au N.-B., comme votre bail ou une facture de services publics",
+      ],
+      where: medicareWhereFr,
+      cost: "Demande gratuite",
+      timeline: medicareTimelineFr,
+      keyFacts: [
+        "Chaque personne inscrite à la demande a besoin de son propre document de statut et de sa pièce d'identité. Seul le demandeur principal doit fournir une preuve d'adresse.",
+        "Si votre famille est ici avec des permis de travail ou d'études plutôt qu'en tant que résidents permanents, appelez le 1-888-762-8600 pour savoir qui est admissible.",
+        "Votre bébé est né au Nouveau-Brunswick? Inscrivez-le en appelant le 1-888-762-8600 ou dans un centre de Service Nouveau-Brunswick, et la carte vous sera envoyée par la poste.",
+        ...medicareBeforeYouApplyFr,
+        "D'ici le début de votre couverture, pensez à une assurance maladie privée pour toute la famille.",
+        ...medicareAfterYouApplyFr,
+      ],
+    },
     officialSourceUrl: MEDICARE_APPLY_URL,
     sortOrder: 27,
     profiles: [FAMILY],
@@ -312,6 +573,34 @@ const items = [
       "The same application counts for the Canada Groceries and Essentials Benefit (formerly the GST/HST credit).",
       "Track your application in your CRA My Account.",
     ],
+    fr: {
+      title: "Demander l'Allocation canadienne pour enfants",
+      detail:
+        "Un paiement mensuel non imposable de l'Agence du revenu du Canada pour chaque enfant de moins de 18 ans qui vit avec vous. Vous pouvez faire la demande dès votre arrivée.",
+      bring: [
+        "Formulaire RC66, Demande de prestations canadiennes pour enfants",
+        "Annexe RC66SCH, Statut au Canada et renseignements sur le revenu (obligatoire pour les nouveaux arrivants)",
+        "Une preuve de votre statut au Canada ou de celui de votre époux ou conjoint de fait, comme une carte de RP, une CRP ou un permis",
+        "Une preuve de naissance pour chaque enfant, avec une traduction en français ou en anglais au besoin",
+        "Vos revenus de toutes sources, au Canada et à l'étranger, pour un maximum de 2 ans avant votre arrivée",
+        "Votre NAS",
+      ],
+      where: "Par la poste à votre centre fiscal, avec les deux formulaires signés",
+      cost: "Demande gratuite",
+      timeline: "Environ 11 semaines pour une demande papier",
+      keyFacts: [
+        "Vous y avez droit si votre enfant a moins de 18 ans et vit avec vous, si vous êtes la principale personne responsable de ses soins et si vous résidez au Canada aux fins de l'impôt.",
+        "Vous ou votre époux ou conjoint de fait devez être citoyen, résident permanent, personne protégée ou résident temporaire. Les demandeurs d'asile ne sont pas admissibles.",
+        "Résidents temporaires : les paiements peuvent commencer à votre 19e mois au Canada, si vous détenez un permis valide ce mois-là.",
+        "De juillet 2026 à juin 2027 : jusqu'à 8 157 $ par année (679,75 $ par mois) pour chaque enfant de moins de 6 ans, et jusqu'à 6 883 $ par année (573,58 $ par mois) pour chaque enfant de 6 à 17 ans. Les paiements diminuent lorsque le revenu familial net dépasse 38 237 $.",
+        "Les paiements ne sont pas imposables. Vous ne les déclarez pas dans votre déclaration de revenus.",
+        "Votre époux ou conjoint de fait a vécu à l'extérieur du Canada pendant une partie d'une année? Envoyez aussi le formulaire CTB9 pour chacune de ces années.",
+        "Lorsque votre permis est renouvelé, envoyez le nouveau permis à l'ARC avant que l'ancien expire, sinon vos paiements s'arrêtent.",
+        "Vous et votre époux ou conjoint de fait devez chacun produire une déclaration de revenus chaque année, généralement au plus tard le 30 avril (le 15 juin si l'un de vous est travailleur autonome). L'ARC s'en sert pour calculer vos paiements.",
+        "La même demande compte pour la nouvelle prestation pour l'épicerie et les produits essentiels (anciennement le crédit pour la TPS/TVH).",
+        "Suivez votre demande dans Mon dossier de l'ARC.",
+      ],
+    },
     officialSourceUrl:
       "https://www.canada.ca/en/revenue-agency/services/child-family-benefits/canada-child-benefit/how-apply.html",
     sortOrder: 28,
@@ -327,6 +616,15 @@ const items = [
       ...bankAddressDocs,
     ],
     cost: "$0 a month: students and newcomers in their first year qualify for a no-cost account",
+    fr: {
+      ...bankSharedFr,
+      detail: `${bankDetailFr} En tant qu'étudiant et nouvel arrivant dans votre première année, vous avez droit à un compte sans frais.`,
+      bring: [
+        "Une pièce d'identité originale avec votre nom et votre date de naissance, comme votre passeport, votre permis d'études ou un permis de conduire canadien",
+        ...bankAddressDocsFr,
+      ],
+      cost: "0 $ par mois : les étudiants et les nouveaux arrivants dans leur première année ont droit à un compte sans frais",
+    },
     profiles: [INTERNATIONAL_STUDENT],
   },
   {
@@ -338,6 +636,15 @@ const items = [
       ...bankAddressDocs,
     ],
     cost: "$0 a month in your first year in Canada, then $4 or less for a low-cost account",
+    fr: {
+      ...bankSharedFr,
+      detail: `${bankDetailFr} Dans votre première année au Canada, vous avez droit à un compte sans frais pour nouveaux arrivants.`,
+      bring: [
+        "Une pièce d'identité originale avec votre nom et votre date de naissance, comme votre passeport, votre carte de RP ou un permis de conduire canadien",
+        ...bankAddressDocsFr,
+      ],
+      cost: bankNewcomerCostFr,
+    },
     profiles: [PERMANENT_RESIDENT],
   },
   {
@@ -349,6 +656,15 @@ const items = [
       ...bankAddressDocs,
     ],
     cost: "$0 a month in your first year in Canada, then $4 or less for a low-cost account",
+    fr: {
+      ...bankSharedFr,
+      detail: `${bankDetailFr} Dans votre première année au Canada, vous avez droit à un compte sans frais pour nouveaux arrivants.`,
+      bring: [
+        "Une pièce d'identité originale avec votre nom et votre date de naissance, comme votre passeport, votre permis de travail ou un permis de conduire canadien",
+        ...bankAddressDocsFr,
+      ],
+      cost: bankNewcomerCostFr,
+    },
     profiles: [WORK_PERMIT_HOLDER],
   },
   {
@@ -361,6 +677,16 @@ const items = [
       ...bankAddressDocs,
     ],
     cost: "$0 a month for newcomers in their first year and for children 18 or younger",
+    fr: {
+      ...bankSharedFr,
+      title: "Ouvrir des comptes bancaires pour votre famille",
+      detail: `${bankDetailFr} Les nouveaux arrivants dans leur première année et les enfants de 18 ans ou moins ont droit à un compte sans frais.`,
+      bring: [
+        "Chaque adulte qui ouvre un compte : une pièce d'identité originale avec son nom et sa date de naissance, comme son passeport, sa carte de RP ou son permis",
+        ...bankAddressDocsFr,
+      ],
+      cost: "0 $ par mois pour les nouveaux arrivants dans leur première année et pour les enfants de 18 ans ou moins",
+    },
     profiles: [FAMILY],
   },
   {
@@ -383,6 +709,26 @@ const items = [
       "Your phone company must stop data overage charges at $50 a month, unless you agree to pay more.",
       "Prepaid plans need no contract, which suits a short stay or someone without Canadian credit history.",
     ],
+    fr: {
+      title: "Obtenir un numéro de téléphone canadien",
+      detail:
+        "Les employeurs, les propriétaires, votre banque et les bureaux du gouvernement ont besoin d'un numéro local pour vous joindre. Comparez les forfaits prépayés et mensuels avant de signer.",
+      bring: [
+        "Une pièce d'identité avec photo, comme votre passeport",
+        "Un moyen de paiement, comme une carte de débit ou de crédit",
+        "Le téléphone de votre pays, si vous voulez continuer à l'utiliser",
+      ],
+      where: "N'importe quel magasin d'une entreprise de téléphonie, ou en ligne",
+      cost: "Selon le forfait. Le prépayé est sans contrat",
+      keyFacts: [
+        "Une entreprise de téléphonie ne peut pas exiger votre NAS pour vous offrir un service.",
+        "Vous avez changé d'idée? Vous pouvez retourner le téléphone et annuler un nouveau contrat dans les 15 jours sans pénalité, si vous n'avez pas utilisé plus de la moitié de votre limite mensuelle. Les personnes handicapées ont 30 jours.",
+        "Vous pouvez annuler un contrat après 2 ans sans frais de résiliation, même si vous aviez accepté une durée plus longue.",
+        "Les téléphones vendus au Canada doivent être déverrouillés, et le déverrouillage est gratuit. Un téléphone de votre pays doit aussi fonctionner sur les réseaux canadiens; vérifiez-le avant d'acheter un forfait.",
+        "Votre entreprise de téléphonie doit arrêter les frais d'utilisation excédentaire de données à 50 $ par mois, sauf si vous acceptez de payer plus.",
+        "Les forfaits prépayés n'exigent pas de contrat, ce qui convient à un court séjour ou à une personne sans historique de crédit canadien.",
+      ],
+    },
     officialSourceUrl: "https://crtc.gc.ca/eng/phone/mobile/code.htm",
     sortOrder: 35,
     profiles: [INTERNATIONAL_STUDENT, PERMANENT_RESIDENT, WORK_PERMIT_HOLDER, FAMILY],
@@ -398,6 +744,16 @@ const items = [
       licenceTemporaryGrace,
       ...licenceFacts,
     ],
+    fr: {
+      ...licenceSharedFr,
+      detail: `Vous n'avez pas à échanger votre permis pendant vos études. ${licenceDetailFr}`,
+      bring: licenceBringFr("Votre permis d'études"),
+      keyFacts: [
+        "Les étudiants n'ont pas à échanger leur permis pendant leurs études, mais doivent le faire dès qu'ils occupent un emploi ou deviennent résidents permanents.",
+        licenceTemporaryGraceFr,
+        ...licenceFactsFr,
+      ],
+    },
     profiles: [INTERNATIONAL_STUDENT],
   },
   {
@@ -406,6 +762,12 @@ const items = [
     detail: `New residents must get a New Brunswick licence as soon as they move here. ${licenceDetail}`,
     bring: licenceBring("Your PR card or COPR"),
     keyFacts: licenceFacts,
+    fr: {
+      ...licenceSharedFr,
+      detail: `Les nouveaux résidents doivent obtenir un permis du Nouveau-Brunswick dès leur arrivée. ${licenceDetailFr}`,
+      bring: licenceBringFr("Votre carte de RP ou votre CRP"),
+      keyFacts: licenceFactsFr,
+    },
     profiles: [PERMANENT_RESIDENT],
   },
   {
@@ -414,6 +776,12 @@ const items = [
     detail: `If your work permit is valid for more than 6 months, you can drive on your home licence for your first 6 months. ${licenceDetail}`,
     bring: licenceBring("Your work permit"),
     keyFacts: [licenceTemporaryGrace, ...licenceFacts],
+    fr: {
+      ...licenceSharedFr,
+      detail: `Si votre permis de travail est valide pour plus de 6 mois, vous pouvez conduire avec le permis de votre pays pendant vos 6 premiers mois. ${licenceDetailFr}`,
+      bring: licenceBringFr("Votre permis de travail"),
+      keyFacts: [licenceTemporaryGraceFr, ...licenceFactsFr],
+    },
     profiles: [WORK_PERMIT_HOLDER],
   },
   {
@@ -431,12 +799,27 @@ const items = [
       licenceTemporaryGrace,
       ...licenceFacts,
     ],
+    fr: {
+      ...licenceSharedFr,
+      title: "Obtenir un permis de conduire du N.-B. pour chaque conducteur",
+      detail: `Chaque personne qui conduira a besoin de son propre permis. ${licenceDetailFr}`,
+      bring: [
+        "Chaque conducteur : son permis original de son pays, avec une traduction officielle en français ou en anglais au besoin",
+        "Chaque conducteur : sa carte de RP, sa CRP, ou son permis d'études ou de travail",
+        "Chaque conducteur : une pièce d'identité et deux preuves d'adresse au N.-B.",
+      ],
+      keyFacts: [
+        "Les résidents permanents doivent obtenir un permis du Nouveau-Brunswick dès leur arrivée.",
+        licenceTemporaryGraceFr,
+        ...licenceFactsFr,
+      ],
+    },
     profiles: [FAMILY],
   },
 ];
 
 async function main() {
-  for (const { profiles, ...data } of items) {
+  for (const { profiles, fr, ...data } of items) {
     const item = await prisma.checklistItem.upsert({
       where: { slug: data.slug },
       create: { ...data, lastCheckedAt: checked },
@@ -445,6 +828,13 @@ async function main() {
     await prisma.profileItem.deleteMany({ where: { checklistItemId: item.id } });
     await prisma.profileItem.createMany({
       data: profiles.map((profileType) => ({ profileType, checklistItemId: item.id })),
+    });
+    // Fingerprint the English as saved, so the API can tell when this French no longer matches it.
+    const french = { ...(fr as French), sourceHash: checklistFingerprint(item) };
+    await prisma.checklistItemTranslation.upsert({
+      where: { checklistItemId_locale: { checklistItemId: item.id, locale: "fr" } },
+      create: { ...french, checklistItemId: item.id, locale: "fr" },
+      update: french,
     });
   }
 }

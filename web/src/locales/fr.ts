@@ -121,6 +121,8 @@ export const fr: Messages = {
     sources: "Sources officielles",
     table: "Tableau comparatif, défile horizontalement",
     lastChecked: "Dernière vérification : {{date}}. Les règles changent; confirmez toujours sur la page officielle.",
+    notTranslated: "Ce guide n'est pas encore offert en français. Il est affiché en anglais.",
+    sourcesLanguage: "Les liens mènent aux pages officielles en anglais. La plupart offrent un lien « Français » en haut de la page.",
   },
   suggest: {
     title: "Suggérer une ressource",

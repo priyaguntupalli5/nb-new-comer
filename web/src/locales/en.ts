@@ -91,7 +91,7 @@ export const en = {
   },
   chat: {
     open: "Ask a question",
-    title: "Ask about your checklist",
+    title: "Ask me anything about the guide",
     subtitle: "Answers come from the official sources in this guide",
     close: "Close chat",
     intro: "Ask anything about your first steps: documents, where to go, costs and timing. For example:",
@@ -119,6 +119,8 @@ export const en = {
     sources: "Official sources",
     table: "Comparison table, scrolls sideways",
     lastChecked: "Last checked: {{date}}. Rules change, so always confirm on the official page.",
+    notTranslated: "This guide is not available in French yet, so it is shown in English.",
+    sourcesLanguage: "",
   },
   suggest: {
     title: "Suggest a resource",
