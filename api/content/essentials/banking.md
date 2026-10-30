@@ -13,6 +13,8 @@ sources:
     url: https://www.td.com/ca/en/personal-banking/products/banking-offers-for-newcomers
   - title: Scotiabank StartRight
     url: https://startright.scotiabank.com/
+  - title: BMO NewStart for permanent residents and foreign workers
+    url: https://www.bmo.com/en-ca/main/personal/newcomers-to-canada/foreign-worker-permanent-resident/
   - title: CIBC banking offers for newcomers
     url: https://www.cibc.com/en/journeys/banking-offers-for-newcomers.html
   - title: Account Comparison Tool
@@ -60,11 +62,9 @@ What each bank's own newcomer page said on **October 29, 2026**. Offers change o
 | [TD New to Canada Banking Package](https://www.td.com/ca/en/personal-banking/products/banking-offers-for-newcomers) | $0 for 1 year (the $17.95 fee is rebated) | Regular fee, unless you keep a minimum balance | Permanent and temporary residents, including students, in Canada 5 years or less | Yes, limit up to $15,000, after a credit check | Only from China or India, by phone. You visit a branch within 75 days |
 | [Scotiabank StartRight](https://startright.scotiabank.com/) | $0 for the first year | $16.95 a month, unless you keep $4,000 in the account every day | Permanent residents in Canada 0 to 5 years, international students and foreign workers | Yes, limit up to $15,000, subject to approval | Yes: an international account you can open and fund before you move |
 | [CIBC Newcomer Banking Bundle](https://www.cibc.com/en/journeys/banking-offers-for-newcomers.html) | $0 for up to 24 months | Regular fee | Permanent residents who landed in the last 5 years; workers with a work permit of at least 12 months | Yes, no deposit or credit history needed | You can check if you are eligible to apply before you arrive |
-| [BMO](https://www.bmo.com/en-ca/main/personal/newcomers-to-canada/) | Not confirmed | Not confirmed | Not confirmed | Not confirmed | Not confirmed |
+| [BMO NewStart](https://www.bmo.com/en-ca/main/personal/newcomers-to-canada/foreign-worker-permanent-resident/) | $0 for 2 years (the $17.95 fee is waived) | $17.95 a month | Permanent residents and foreign workers who arrived in the last 5 years | Yes, no credit history needed, subject to approval | Yes, from qualifying countries: open online and send up to $75,000 before you arrive |
 
-We could not load BMO's newcomer page when we checked, so open it to see its current offer.
-
-Extra perks worth asking about: RBC charges no transfer fee on international money transfers, and TD charges no TD transfer fee on TD Global Transfer for up to 12 months. Other banks' fees and exchange rates still apply.
+Extra perks worth asking about: RBC charges no transfer fee on international money transfers, BMO charges no fee on BMO Global Money Transfer, and TD charges no TD transfer fee on TD Global Transfer for up to 12 months. Other banks' fees and exchange rates still apply.
 
 When you compare, check:
 

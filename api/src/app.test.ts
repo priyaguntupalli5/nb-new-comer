@@ -66,7 +66,7 @@ describe("API", () => {
   });
 
   it("serves every essentials article with valid frontmatter", async () => {
-    for (const slug of ["sin-id", "health-card", "drivers-licence", "banking"]) {
+    for (const slug of ["sin-id", "health-card", "drivers-licence", "banking", "phone-plans"]) {
       const res = await request(app).get(`/api/content/essentials/${slug}`);
       expect(res.status, slug).toBe(200);
     }
