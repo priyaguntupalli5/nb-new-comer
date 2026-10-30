@@ -2,7 +2,7 @@
 title: Carte d'assurance-maladie
 summary: Qui est admissible à l'Assurance-maladie du Nouveau-Brunswick, comment présenter une demande, ce qui est couvert et comment obtenir des soins en attendant un médecin de famille.
 lastChecked: "2026-10-29"
-translatedFrom: 953df83d66c2c0ca
+translatedFrom: "953df83d66c2c0ca"
 sources:
   - title: Assurance-maladie du Nouveau-Brunswick
     url: https://www2.gnb.ca/content/gnb/en/departments/health/Medicare.html

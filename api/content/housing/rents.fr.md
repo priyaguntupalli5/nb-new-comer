@@ -2,7 +2,7 @@
 title: Loyers typiques par ville
 summary: Les loyers moyens demandés à Fredericton, Moncton et Saint John, selon Statistique Canada, avec la date de vérification.
 lastChecked: "2026-10-29"
-translatedFrom: 5e9bebb2a4d3a302
+translatedFrom: "5e9bebb2a4d3a302"
 sources:
   - title: Prix des loyers demandés selon le type de logement locatif (Statistique Canada, tableau 46-10-0092-01)
     url: https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=4610009201

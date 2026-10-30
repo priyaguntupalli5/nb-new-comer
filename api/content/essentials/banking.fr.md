@@ -2,7 +2,7 @@
 title: Services bancaires
 summary: Les offres des grandes banques pour les nouveaux arrivants côte à côte, vos droits à l'ouverture d'un compte, les comptes sans frais et comment bâtir votre crédit au Canada.
 lastChecked: "2026-10-29"
-translatedFrom: 131440fb279d71fc
+translatedFrom: "131440fb279d71fc"
 sources:
   - title: Ouvrir un compte bancaire (Agence de la consommation en matière financière du Canada)
     url: https://www.canada.ca/en/financial-consumer-agency/services/banking/opening-bank-account.html

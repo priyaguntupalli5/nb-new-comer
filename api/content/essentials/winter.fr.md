@@ -2,7 +2,7 @@
 title: L'hiver, les bases
 summary: Quoi porter, comment garder votre logement chaud et sécuritaire, vous préparer aux tempêtes, conduire en hiver et les règles de stationnement d'hiver de chaque ville.
 lastChecked: "2026-10-29"
-translatedFrom: c43d07ccaad9e05a
+translatedFrom: "c43d07ccaad9e05a"
 sources:
   - title: Froid extrême (Santé Canada)
     url: https://www.canada.ca/en/health-canada/services/healthy-living/your-health/environment/extreme-cold.html

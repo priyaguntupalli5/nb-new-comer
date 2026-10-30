@@ -2,7 +2,7 @@
 title: La location au N.-B.
 summary: Baux, dépôts, ce qu'un propriétaire peut ou ne peut pas exiger, et comment mettre fin à un bail au Nouveau-Brunswick.
 lastChecked: "2026-10-29"
-translatedFrom: 393526abd352ce4c
+translatedFrom: "393526abd352ce4c"
 sources:
   - title: Baux (gouvernement du Nouveau-Brunswick)
     url: https://www.gnb.ca/en/topic/family-home-community/housing-property/lease.html

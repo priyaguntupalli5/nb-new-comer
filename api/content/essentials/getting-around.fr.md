@@ -2,7 +2,7 @@
 title: Se déplacer
 summary: Les autobus urbains de Fredericton, Moncton et Saint John côte à côte, les laissez-passer étudiants et les déplacements entre les villes sans voiture.
 lastChecked: "2026-10-29"
-translatedFrom: 8659a03eca58cab8
+translatedFrom: "8659a03eca58cab8"
 sources:
   - title: Tarifs de Fredericton Transit
     url: https://www.fredericton.ca/resident-services/fredericton-transit/fares

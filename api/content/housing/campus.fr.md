@@ -2,7 +2,7 @@
 title: Près de votre campus
 summary: Le logement sur le campus et l'aide pour se loger hors campus dans les universités et collèges du Nouveau-Brunswick, côte à côte.
 lastChecked: "2026-10-29"
-translatedFrom: 89bacf46cf16645d
+translatedFrom: "89bacf46cf16645d"
 sources:
   - title: Vivre hors campus à Fredericton (UNB)
     url: https://www.unb.ca/studentlife/living-off-campus/living-off-campus-fredericton.html

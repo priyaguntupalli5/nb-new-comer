@@ -6,7 +6,8 @@ import { prisma } from "../lib/prisma.js";
 import { CONTENT_DIR, SECTIONS, sourceHash } from "../modules/content/content.service.js";
 
 // Lists every English guide and checklist step with the state of its French version, and the fingerprint
-// a fresh translation must record. Run with: npm -w api run content:status
+// a fresh translation must record. In a guide's header, quote it (translatedFrom: "1234e5...") so YAML
+// never reads it as a number. Run with: npm -w api run content:status
 async function readOrNull(file: string) {
   try {
     return await readFile(file, "utf8");

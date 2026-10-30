@@ -2,7 +2,7 @@
 title: Vos droits de locataire
 summary: Augmentations de loyer, quand votre propriétaire peut entrer, réparations, expulsions et comment obtenir l'aide du Bureau des relations entre locataires et propriétaires de la province.
 lastChecked: "2026-10-29"
-translatedFrom: 03dbc1875543b912
+translatedFrom: "03dbc1875543b912"
 sources:
   - title: Augmentations de loyer (gouvernement du Nouveau-Brunswick)
     url: https://www.gnb.ca/en/topic/family-home-community/housing-property/increase.html

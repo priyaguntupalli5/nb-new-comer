@@ -63,8 +63,12 @@ async function readArticle(section: Section, slug: string, lang: Language): Prom
     const translated = await readContent(section, `${slug}.${lang}.md`);
     if (translated !== null) {
       const { data, content } = matter(translated);
-      const { translatedFrom, ...meta } = translationSchema.parse(data);
-      if (translatedFrom === sourceHash(raw)) return { ...meta, slug, body: content.trim(), lang };
+      // A translation with a broken header falls back to English rather than breaking the page.
+      const parsed = translationSchema.safeParse(data);
+      if (parsed.success && parsed.data.translatedFrom === sourceHash(raw)) {
+        const { translatedFrom: _, ...meta } = parsed.data;
+        return { ...meta, slug, body: content.trim(), lang };
+      }
     }
   }
 

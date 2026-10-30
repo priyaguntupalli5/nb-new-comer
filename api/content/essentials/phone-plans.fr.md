@@ -2,7 +2,7 @@
 title: Forfaits de téléphone
 summary: Prépayé ou mensuel, ce qui convient à un séjour court ou long, les forfaits côte à côte et vos droits à l'abonnement.
 lastChecked: "2026-10-29"
-translatedFrom: 32ff700877b9f2de
+translatedFrom: "32ff700877b9f2de"
 sources:
   - title: Protégé par le Code sur les services sans fil (CRTC)
     url: https://crtc.gc.ca/eng/phone/mobile/code.htm

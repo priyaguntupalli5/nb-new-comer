@@ -2,7 +2,7 @@
 title: NAS et pièces d'identité
 summary: Ce qu'est un numéro d'assurance sociale, comment le protéger et quelles pièces d'identité garder sur vous au Nouveau-Brunswick.
 lastChecked: "2026-10-29"
-translatedFrom: 63e0c536b9ab441a
+translatedFrom: "63e0c536b9ab441a"
 sources:
   - title: Numéro d'assurance sociale (Service Canada)
     url: https://www.canada.ca/en/employment-social-development/services/sin.html

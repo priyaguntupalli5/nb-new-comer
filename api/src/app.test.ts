@@ -1,6 +1,9 @@
+import { rm, writeFile } from "node:fs/promises";
+import path from "node:path";
 import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
 import { createApp } from "./app.js";
+import { CONTENT_DIR } from "./modules/content/content.service.js";
 
 const app = createApp();
 
@@ -100,10 +103,31 @@ describe("API", () => {
     }
   });
 
-  it("falls back to English for a guide with no French version", async () => {
-    const res = await request(app).get("/api/content/community/food?lang=fr");
-    expect(res.status).toBe(200);
-    expect(res.body.lang).toBe("en");
+  it("serves every community guide in French", async () => {
+    for (const slug of ["food", "faith"]) {
+      const res = await request(app).get(`/api/content/community/${slug}?lang=fr`);
+      expect(res.status, slug).toBe(200);
+      expect(res.body.lang, slug).toBe("fr");
+    }
+  });
+
+  it("falls back to English when a French guide is missing or made from older English", async () => {
+    const dir = path.join(CONTENT_DIR, "community");
+    const english = path.join(dir, "zz-test-guide.md");
+    const french = path.join(dir, "zz-test-guide.fr.md");
+    const meta = 'lastChecked: "2026-10-30"\nsources:\n  - title: Source\n    url: https://example.ca/\n';
+    try {
+      await writeFile(english, `---\ntitle: Test guide\nsummary: English.\n${meta}---\n\nEnglish body.\n`);
+      let res = await request(app).get("/api/content/community/zz-test-guide?lang=fr");
+      expect(res.body).toMatchObject({ lang: "en", title: "Test guide" });
+
+      await writeFile(french, `---\ntitle: Guide test\nsummary: Français.\ntranslatedFrom: "0000000000000000"\n${meta}---\n\nCorps.\n`);
+      res = await request(app).get("/api/content/community/zz-test-guide?lang=fr");
+      expect(res.body).toMatchObject({ lang: "en", title: "Test guide" });
+    } finally {
+      await rm(english, { force: true });
+      await rm(french, { force: true });
+    }
   });
 
   it("rejects a guide language the site does not offer", async () => {

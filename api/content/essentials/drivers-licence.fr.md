@@ -2,7 +2,7 @@
 title: Permis de conduire
 summary: Combien de temps vous pouvez conduire avec le permis de votre pays, si vous pouvez l'échanger ou devez passer des examens, et comment obtenir un permis du Nouveau-Brunswick.
 lastChecked: "2026-10-29"
-translatedFrom: 1ba1e4d0ee75d561
+translatedFrom: "1ba1e4d0ee75d561"
 sources:
   - title: Permis de conduire pour les nouveaux résidents
     url: https://www.gnb.ca/en/topic/driving-transportation/driving-licensing/licences-new-residents.html
