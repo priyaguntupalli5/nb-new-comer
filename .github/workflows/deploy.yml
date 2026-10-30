@@ -1,0 +1,122 @@
+name: Deploy serverless (Lambda + S3 + CloudFront)
+
+# Run it manually from the Actions tab.
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write   # OIDC login to AWS, no stored AWS keys
+  contents: read
+
+concurrency:
+  group: deploy-serverless
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: us-east-1
+  STACK_NAME: nb-newcomer-guide
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up SAM CLI
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+
+      - name: Log in to AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # ── Build ─────────────────────────────────────────────────────────────
+      - name: Install and build
+        run: |
+          npm ci
+          npx -w api prisma generate
+          npm run build
+
+      # ── Database ──────────────────────────────────────────────────────────
+      # Migrations use Neon's direct connection (the pooled one can't run them). The seed is idempotent:
+      # it brings checklist steps and their French text in line with prisma/seed.ts on every deploy.
+      - name: Migrate and seed database
+        env:
+          DATABASE_URL: ${{ secrets.NEON_DIRECT_URL }}
+        run: |
+          npx -w api prisma migrate deploy
+          npx -w api prisma db seed
+
+      # ── API package ───────────────────────────────────────────────────────
+      # Production dependencies only, plus the Prisma client generated for Lambda's arm64 engine.
+      - name: Package API for Lambda
+        run: |
+          rm -rf node_modules api/node_modules web/node_modules .lambda
+          npm ci --omit=dev -w api
+          npx -y "prisma@$(node -p "require('@prisma/client/package.json').version")" generate --schema api/prisma/schema.prisma
+          mkdir .lambda
+          cp -r api/dist api/content api/package.json .lambda/
+          cp -r node_modules .lambda/node_modules
+          if [ -d api/node_modules ]; then cp -r api/node_modules/. .lambda/node_modules/; fi
+          # Workspace links point outside the package and would break in Lambda
+          rm -f .lambda/node_modules/api .lambda/node_modules/web
+          cp deployment/run.sh .lambda/run.sh
+          chmod +x .lambda/run.sh
+          du -sh .lambda
+
+      - name: Deploy stack
+        env:
+          DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+          ORIGIN_SECRET: ${{ secrets.ORIGIN_SECRET }}
+        run: |
+          sam deploy --no-progressbar --parameter-overrides \
+            "DatabaseUrl=$DATABASE_URL" \
+            "AdminToken=$ADMIN_TOKEN" \
+            "OriginSecret=$ORIGIN_SECRET"
+
+      - name: Read stack outputs
+        id: stack
+        run: |
+          out() { aws cloudformation describe-stacks --stack-name "$STACK_NAME" \
+                    --query "Stacks[0].Outputs[?OutputKey=='$1'].OutputValue" --output text; }
+          echo "bucket=$(out FrontendBucketName)"     >> "$GITHUB_OUTPUT"
+          echo "distribution=$(out DistributionId)"  >> "$GITHUB_OUTPUT"
+          echo "url=$(out AppUrl)"                   >> "$GITHUB_OUTPUT"
+
+      # ── Frontend ──────────────────────────────────────────────────────────
+      # Hashed bundles in assets/ never change, so cache them for a year. index.html must always be
+      # revalidated, or visitors get stuck on an old version.
+      - name: Upload to S3
+        working-directory: web/dist
+        env:
+          BUCKET: ${{ steps.stack.outputs.bucket }}
+        run: |
+          aws s3 sync . "s3://$BUCKET" --delete --exclude index.html \
+            --cache-control 'public, max-age=31536000, immutable'
+          # cp (not sync) so it always uploads, even when its size is unchanged
+          aws s3 cp index.html "s3://$BUCKET/index.html" --cache-control 'no-cache'
+
+      - name: Refresh CloudFront
+        run: |
+          aws cloudfront create-invalidation --distribution-id "${{ steps.stack.outputs.distribution }}" \
+            --paths '/*' --query 'Invalidation.Id' --output text
+
+      - name: Check the live site
+        run: |
+          URL="${{ steps.stack.outputs.url }}"
+          curl -fsS "$URL/api/health"
+          curl -fsS "$URL/api/checklist?profile=FAMILY&lang=fr" | head -c 300; echo
+
+      - name: Summary
+        run: echo "### Deployed to ${{ steps.stack.outputs.url }}" >> "$GITHUB_STEP_SUMMARY"

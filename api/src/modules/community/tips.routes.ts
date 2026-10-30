@@ -3,6 +3,7 @@ import { Router } from "express";
 import { rateLimit } from "express-rate-limit";
 import { z } from "zod";
 import { prisma } from "../../lib/prisma.js";
+import { viewerKey } from "../../middleware/cloudfront.js";
 import { HttpError } from "../../middleware/error-handler.js";
 import { requireAdmin } from "../../middleware/require-admin.js";
 
@@ -31,7 +32,13 @@ const listSchema = z.object({
 });
 
 // Public submissions are cheap to send, so each visitor gets a few per hour.
-const submitLimiter = rateLimit({ windowMs: 60 * 60_000, limit: 5, standardHeaders: "draft-8", legacyHeaders: false });
+const submitLimiter = rateLimit({
+  windowMs: 60 * 60_000,
+  limit: 5,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  keyGenerator: viewerKey,
+});
 
 export const tipsRouter = Router();
 

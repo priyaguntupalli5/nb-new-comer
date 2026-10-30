@@ -4,6 +4,7 @@ import helmet from "helmet";
 import { pinoHttp } from "pino-http";
 import { env } from "./config/env.js";
 import { logger } from "./lib/logger.js";
+import { requireCloudFront } from "./middleware/cloudfront.js";
 import { errorHandler, notFound } from "./middleware/error-handler.js";
 import { healthRouter } from "./modules/health/health.routes.js";
 import { checklistRouter } from "./modules/checklist/checklist.routes.js";
@@ -15,6 +16,7 @@ export function createApp() {
   const app = express();
 
   app.use(helmet());
+  app.use(requireCloudFront);
   app.use(cors({ origin: env.CORS_ORIGIN }));
   app.use(express.json({ limit: "100kb" }));
   app.use(pinoHttp({ logger }));

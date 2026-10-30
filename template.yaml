@@ -1,0 +1,221 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  NB Newcomer Guide (serverless). Express API on Lambda (Node.js, run unchanged through the Lambda Web Adapter)
+  behind a Function URL, React app on S3, both served through one CloudFront distribution (/api/* to Lambda,
+  everything else to S3). Database is Neon Postgres (free plan). The chat assistant calls Claude on Bedrock with
+  the function's own IAM role, so no AWS keys are stored anywhere.
+
+# Secrets arrive as parameter overrides from the deploy workflow (GitHub secrets), never committed.
+Parameters:
+  DatabaseUrl:
+    Type: String
+    NoEcho: true
+    Description: Neon pooled connection string, with ?sslmode=require&pgbouncer=true&connection_limit=1
+  AdminToken:
+    Type: String
+    NoEcho: true
+    MinLength: 24
+    Description: Token for the moderation page (/admin/suggestions)
+  OriginSecret:
+    Type: String
+    NoEcho: true
+    MinLength: 32
+    Description: Shared secret CloudFront sends as X-Origin-Verify; the API refuses requests without it
+  BedrockModelId:
+    Type: String
+    Default: global.anthropic.claude-haiku-4-5-20251001-v1:0
+
+Resources:
+
+  # ── API ───────────────────────────────────────────────────────────────────
+
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      # Built by the deploy workflow: dist/, content/, node_modules/, package.json and run.sh
+      CodeUri: .lambda/
+      # The Lambda Web Adapter starts run.sh (node dist/server.js) and forwards each request to it over HTTP.
+      Handler: run.sh
+      Runtime: nodejs22.x
+      Architectures: [arm64]
+      MemorySize: 512
+      # Chat answers stream for up to ~30 s; everything else returns in well under a second.
+      Timeout: 60
+      Layers:
+        - !Sub 'arn:aws:lambda:${AWS::Region}:753240598075:layer:LambdaAdapterLayerArm64:26'
+      # Streaming lets chat answers appear word by word, as they do locally.
+      FunctionUrlConfig:
+        AuthType: NONE   # CloudFront is the public entry point; the API checks X-Origin-Verify itself
+        InvokeMode: RESPONSE_STREAM
+      LoggingConfig:
+        LogGroup: !Ref ApiLogGroup
+      Environment:
+        Variables:
+          AWS_LAMBDA_EXEC_WRAPPER: /opt/bootstrap
+          AWS_LWA_INVOKE_MODE: response_stream
+          AWS_LWA_READINESS_CHECK_PATH: /api/health
+          PORT: '8080'
+          NODE_ENV: production
+          LOG_LEVEL: info
+          DATABASE_URL: !Ref DatabaseUrl
+          ADMIN_TOKEN: !Ref AdminToken
+          ORIGIN_SECRET: !Ref OriginSecret
+          BEDROCK_MODEL_ID: !Ref BedrockModelId
+          # AWS_REGION is set by Lambda itself, which also turns the chat on.
+      Policies:
+        - Statement:
+            # Chat only. The global inference profile routes to whichever region has capacity,
+            # so the model resources can't be pinned to one region.
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+                - bedrock:InvokeModelWithResponseStream
+              Resource: '*'
+
+  # Short retention keeps CloudWatch log storage inside the free tier
+  ApiLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-api'
+      RetentionInDays: 14
+
+  # ── Frontend ──────────────────────────────────────────────────────────────
+
+  FrontendBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  FrontendBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref FrontendBucket
+      PolicyDocument:
+        Statement:
+          - Sid: AllowCloudFrontRead
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub '${FrontendBucket.Arn}/*'
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${Distribution}'
+
+  FrontendOriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub '${AWS::StackName}-frontend'
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  # React routes like /checklist or /essentials/sin-id have no file in S3, so serve index.html for any path
+  # without an extension. A function (not custom error pages) so real /api 404s aren't masked.
+  SpaRewriteFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: !Sub '${AWS::StackName}-spa-rewrite'
+      AutoPublish: true
+      FunctionConfig:
+        Comment: Rewrite extensionless paths to /index.html
+        Runtime: cloudfront-js-2.0
+      FunctionCode: |
+        function handler(event) {
+          var request = event.request;
+          if (!request.uri.includes('.')) {
+            request.uri = '/index.html';
+          }
+          return request;
+        }
+
+  # Behind CloudFront the API only sees AWS addresses. This copies the visitor's real IP into X-Viewer-IP,
+  # overwriting any value the visitor sent, so the chat and suggestion rate limits apply per visitor.
+  ViewerIpFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: !Sub '${AWS::StackName}-viewer-ip'
+      AutoPublish: true
+      FunctionConfig:
+        Comment: Pass the viewer IP to the API for rate limiting
+        Runtime: cloudfront-js-2.0
+      FunctionCode: |
+        function handler(event) {
+          var request = event.request;
+          request.headers['x-viewer-ip'] = { value: event.viewer.ip };
+          return request;
+        }
+
+  # ── CDN ───────────────────────────────────────────────────────────────────
+
+  Distribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment: NB Newcomer Guide
+        DefaultRootObject: index.html
+        HttpVersion: http2and3
+        PriceClass: PriceClass_100
+        Origins:
+          - Id: frontend
+            DomainName: !GetAtt FrontendBucket.RegionalDomainName
+            OriginAccessControlId: !GetAtt FrontendOriginAccessControl.Id
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+          - Id: api
+            # Function URL looks like https://<id>.lambda-url.<region>.on.aws/; keep just the host
+            DomainName: !Select [2, !Split ['/', !GetAtt ApiFunctionUrl.FunctionUrl]]
+            OriginCustomHeaders:
+              - HeaderName: X-Origin-Verify
+                HeaderValue: !Ref OriginSecret
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols: [TLSv1.2]
+        DefaultCacheBehavior:
+          TargetOriginId: frontend
+          ViewerProtocolPolicy: redirect-to-https
+          Compress: true
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6   # Managed-CachingOptimized
+          FunctionAssociations:
+            - EventType: viewer-request
+              FunctionARN: !GetAtt SpaRewriteFunction.FunctionMetadata.FunctionARN
+        CacheBehaviors:
+          - PathPattern: /api/*
+            TargetOriginId: api
+            ViewerProtocolPolicy: https-only
+            AllowedMethods: [GET, HEAD, OPTIONS, PUT, PATCH, POST, DELETE]
+            CachedMethods: [GET, HEAD]
+            CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad          # Managed-CachingDisabled
+            # Forwards Authorization etc. but not Host, which a Function URL rejects
+            OriginRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac  # Managed-AllViewerExceptHostHeader
+            FunctionAssociations:
+              - EventType: viewer-request
+                FunctionARN: !GetAtt ViewerIpFunction.FunctionMetadata.FunctionARN
+
+Outputs:
+  AppUrl:
+    Description: Open the site here
+    Value: !Sub 'https://${Distribution.DomainName}'
+  DistributionId:
+    Description: For cache invalidation after a frontend deploy
+    Value: !Ref Distribution
+  FrontendBucketName:
+    Description: Upload the React build here
+    Value: !Ref FrontendBucket
+  ApiFunctionUrl:
+    Description: Direct Lambda URL (for debugging; it refuses requests that skip CloudFront)
+    Value: !GetAtt ApiFunctionUrl.FunctionUrl
