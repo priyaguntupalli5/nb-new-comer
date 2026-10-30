@@ -57,7 +57,7 @@ export const fr: Messages = {
     driving: { title: "Permis de conduire", body: "Utiliser le permis de votre pays et les étapes pour obtenir celui du Nouveau-Brunswick.", link: "Lire le guide" },
     banking: { title: "Services bancaires", body: "Les offres des grandes banques pour les nouveaux arrivants, côte à côte, plus les comptes sans frais et le crédit.", link: "Comparer les banques" },
     phone: { title: "Forfaits de téléphone", body: "Options prépayées, postpayées et économiques, selon la durée de votre séjour.", link: "Comparer les fournisseurs" },
-    transit: { title: "Se déplacer", body: "Autobus urbains, laissez-passer étudiants et déplacements entre les villes sans voiture.", link: "Source officielle" },
+    transit: { title: "Se déplacer", body: "Autobus urbains, laissez-passer étudiants et déplacements entre les villes sans voiture.", link: "Comparer les autobus" },
     winter: { title: "L'hiver, les bases", body: "Quoi porter, où l'acheter et comment garder votre logement chaud et sécuritaire.", link: "Lire le guide" },
   },
   housing: {
