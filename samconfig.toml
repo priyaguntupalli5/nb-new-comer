@@ -9,3 +9,5 @@ capabilities = "CAPABILITY_IAM"
 resolve_s3 = true
 confirm_changeset = false
 fail_on_empty_changeset = false
+# Applied to every resource in the stack, so AWS Budgets can track this project's costs separately.
+tags = "project=nb-newcomer-guide"
