@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import "../i18n";
+import i18n from "../i18n";
 import type { ChecklistItem } from "../api/checklist";
 import { ChecklistPage } from "./ChecklistPage";
 import { HomePage } from "./HomePage";
@@ -45,13 +45,27 @@ describe("HomePage", () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async (url: string) => {
-        const profile = new URL(url, "http://localhost").searchParams.get("profile")!;
-        return new Response(JSON.stringify({ profile, items: byProfile[profile] ?? [] }));
+        const params = new URL(url, "http://localhost").searchParams;
+        const profile = params.get("profile")!;
+        const items = (byProfile[profile] ?? []).map((i) =>
+          params.get("lang") === "fr" && i.slug === "sin" ? { ...i, title: "Obtenir votre NAS" } : i,
+        );
+        return new Response(JSON.stringify({ profile, items }));
       }),
     );
   });
 
-  afterEach(() => vi.unstubAllGlobals());
+  afterEach(async () => {
+    vi.unstubAllGlobals();
+    await i18n.changeLanguage("en");
+  });
+
+  it("shows the steps in French when the site switches to French", async () => {
+    renderPage();
+    await screen.findByRole("heading", { name: "Get your SIN" });
+    await i18n.changeLanguage("fr");
+    expect(await screen.findByRole("heading", { name: "Obtenir votre NAS" })).toBeInTheDocument();
+  });
 
   it("shows only the first three steps for the selected profile", async () => {
     renderPage();

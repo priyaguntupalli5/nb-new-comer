@@ -16,6 +16,11 @@ describe("API", () => {
     expect(res.status).toBe(400);
   });
 
+  it("rejects a checklist language the site does not offer", async () => {
+    const res = await request(app).get("/api/checklist?profile=FAMILY&lang=de");
+    expect(res.status).toBe(400);
+  });
+
   it("rejects a chat request that does not end with a user message", async () => {
     const res = await request(app)
       .post("/api/chat")
