@@ -92,6 +92,21 @@ describe("HomePage", () => {
     expect(JSON.parse(localStorage.getItem("nbg.completed")!)).toEqual(["sin"]);
   });
 
+  it("keeps the profile and progress after a page reload", async () => {
+    const first = renderPage();
+    await screen.findByRole("heading", { name: "Get your SIN" });
+    fireEvent.click(screen.getByRole("radio", { name: /Family moving together/ }));
+    const [step] = await screen.findAllByRole("button", { name: "Mark as done" });
+    fireEvent.click(step);
+    first.unmount();
+
+    // A fresh render reads only what the browser stored, like a refresh does.
+    renderPage();
+    expect(await screen.findByRole("heading", { name: "Apply for Medicare" })).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: /Family moving together/ })).toBeChecked();
+    expect(screen.getByText("1 of 3 done")).toBeInTheDocument();
+  });
+
   it("switches steps when a different profile is picked", async () => {
     renderPage();
     await screen.findByRole("heading", { name: "Get your SIN" });
