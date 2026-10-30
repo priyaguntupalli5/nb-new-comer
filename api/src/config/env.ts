@@ -6,6 +6,8 @@ const schema = z.object({
   DATABASE_URL: z.string().min(1),
   CORS_ORIGIN: z.string().default("http://localhost:5173"),
   LOG_LEVEL: z.string().default("info"),
+  // Shared secret for the moderation endpoints until accounts and roles exist. Unset means moderation is off.
+  ADMIN_TOKEN: z.string().min(24).optional(),
 });
 
 export const env = schema.parse(process.env);

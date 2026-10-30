@@ -17,7 +17,7 @@ const proseClass =
   "[&_th]:border-b-2 [&_th]:border-line [&_th]:bg-paper [&_th]:p-3 [&_th]:text-left [&_th]:align-bottom [&_th]:font-semibold " +
   "[&_td]:border-b [&_td]:border-line [&_td]:p-3 [&_td]:align-top";
 
-type Section = "essentials" | "housing";
+type Section = "essentials" | "housing" | "community";
 
 export function ArticlePage({ section }: { section: Section }) {
   const { slug = "" } = useParams();

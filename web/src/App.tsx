@@ -2,7 +2,9 @@ import { Outlet, Route, Routes } from "react-router";
 import { ChatWidget } from "./components/chat/ChatWidget";
 import { SiteFooter } from "./components/SiteFooter";
 import { SiteHeader } from "./components/SiteHeader";
+import { AdminSuggestionsPage } from "./pages/AdminSuggestionsPage";
 import { ArticlePage } from "./pages/ArticlePage";
+import { SuggestPage } from "./pages/SuggestPage";
 import { ChecklistPage } from "./pages/ChecklistPage";
 import { ComingSoonPage } from "./pages/ComingSoonPage";
 import { HomePage } from "./pages/HomePage";
@@ -28,6 +30,9 @@ export default function App() {
         <Route path="checklist" element={<ChecklistPage />} />
         <Route path="essentials/:slug" element={<ArticlePage section="essentials" />} />
         <Route path="housing/:slug" element={<ArticlePage section="housing" />} />
+        <Route path="community/suggest" element={<SuggestPage />} />
+        <Route path="community/:slug" element={<ArticlePage section="community" />} />
+        <Route path="admin/suggestions" element={<AdminSuggestionsPage />} />
         <Route path="*" element={<ComingSoonPage />} />
       </Route>
     </Routes>

@@ -105,9 +105,13 @@ model Tip {
   id         String    @id @default(uuid())
   authorId   String?   @map("author_id")
   category   String
+  title      String
+  city       String
+  link       String?
   body       String
   status     TipStatus @default(PENDING)
   createdAt  DateTime  @default(now()) @map("created_at")
+  reviewedAt DateTime? @map("reviewed_at")
   reviewedBy String?   @map("reviewed_by")
   author     User?     @relation("TipAuthor", fields: [authorId], references: [id], onDelete: SetNull)
   reviewer   User?     @relation("TipReviewer", fields: [reviewedBy], references: [id], onDelete: SetNull)
