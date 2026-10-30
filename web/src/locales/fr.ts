@@ -115,7 +115,7 @@ export const fr: Messages = {
     },
   },
   article: {
-    back: { essentials: "Tout l'essentiel", housing: "Tous les guides sur le logement" },
+    back: { essentials: "Tout l'essentiel", housing: "Tous les guides sur le logement", community: "Trouvez votre communauté" },
     loading: "Chargement du guide…",
     error: "Nous n'avons pas pu charger ce guide. Vérifiez votre connexion et réessayez.",
     sources: "Sources officielles",

@@ -28,6 +28,7 @@ export default function App() {
         <Route path="checklist" element={<ChecklistPage />} />
         <Route path="essentials/:slug" element={<ArticlePage section="essentials" />} />
         <Route path="housing/:slug" element={<ArticlePage section="housing" />} />
+        <Route path="community/:slug" element={<ArticlePage section="community" />} />
         <Route path="*" element={<ComingSoonPage />} />
       </Route>
     </Routes>
