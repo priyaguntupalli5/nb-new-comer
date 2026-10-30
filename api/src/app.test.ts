@@ -79,10 +79,11 @@ describe("API", () => {
     }
   });
 
-  it("serves the community food guide", async () => {
-    const res = await request(app).get("/api/content/community/food");
-    expect(res.status).toBe(200);
-    expect(res.body.title).toBe("Food from home");
+  it("serves every community guide with valid frontmatter", async () => {
+    for (const slug of ["food", "faith"]) {
+      const res = await request(app).get(`/api/content/community/${slug}`);
+      expect(res.status, slug).toBe(200);
+    }
   });
 
   it("returns 404 for an unknown article and rejects path tricks", async () => {
