@@ -83,6 +83,8 @@ const licenceFacts = [
   "No written or road test if your licence is from: Australia, Austria, Belgium, Denmark, France, Germany, Ireland, Isle of Man, Italy, Japan, the Netherlands, New Zealand, Norway, Portugal, South Korea, Spain, Sweden, Switzerland, Taiwan, Ukraine, or the UK (England, Scotland, Wales).",
   "Licences from other Canadian provinces and US states are exchanged class for class, with no tests.",
   "From any other country, you take the full exam: a vision test, a written knowledge test and a road test.",
+  "For ID, a PR card, a study or work permit, or a foreign passport with your immigration documents works. A Medicare card or school ID does not.",
+  "Your two proofs of address must come from two different organizations, for example your lease and a utility bill.",
   "Taiwan: also bring an English translation authenticated by the Taipei Economic and Cultural Office in Toronto, and a Verification Certificate issued in the last 3 months. Ukraine: category B or BE licences need a vision test.",
   "The knowledge test can be done online or at a Service New Brunswick office. Wait at least 4 business days after passing before going to an office for the next step.",
   "Book the road test online or at 1-888-762-8600. Bring a driver with a full licence and at least 3 years' experience, and a registered, insured vehicle.",
@@ -112,7 +114,7 @@ const medicareBeforeYouApply = [
 const medicareAfterYouApply = [
   "Tell Medicare when your status, permit or address changes, or you could lose your coverage.",
   "No letter after 14 weeks? Call Service New Brunswick at 1-888-762-8600.",
-  "To find a family doctor, register with Patient Connect NB, online or by calling 811. Waits can be long.",
+  "No family doctor yet? Register with NB Health Link at nbhealthlink.ca. Until then, call 811 any time to talk to a nurse.",
 ];
 
 // sortOrder is global; each profile sees its own items in this order, and the first three are its urgent steps.

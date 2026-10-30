@@ -17,6 +17,7 @@ COPY --from=build /app/node_modules node_modules
 COPY --from=build /app/api/package.json api/
 COPY --from=build /app/api/dist api/dist
 COPY --from=build /app/api/prisma api/prisma
+COPY --from=build /app/api/content api/content
 WORKDIR /app/api
 EXPOSE 3000
 CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]

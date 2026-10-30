@@ -50,12 +50,12 @@ export const en = {
   essentials: {
     heading: "The essentials, in one place",
     lead: "Short explainers, with a link to the official source on every card.",
-    sin: { title: "SIN and ID", body: "What a Social Insurance Number is, and which documents to keep with you.", link: "Official source" },
-    health: { title: "Health card (Medicare)", body: "Who qualifies, how to apply, and how to find a family doctor.", link: "Official source" },
-    driving: { title: "Driver's licence", body: "Using your licence from home, and the steps to get a New Brunswick one.", link: "Official source" },
-    banking: { title: "Banking", body: "Newcomer and student accounts from the five big banks, side by side.", link: "Compare 5 banks" },
+    sin: { title: "SIN and ID", body: "What a Social Insurance Number is, and which documents to keep with you.", link: "Read the guide" },
+    health: { title: "Health card (Medicare)", body: "Who qualifies, how to apply, and how to find a family doctor.", link: "Read the guide" },
+    driving: { title: "Driver's licence", body: "Using your licence from home, and the steps to get a New Brunswick one.", link: "Read the guide" },
+    banking: { title: "Banking", body: "Newcomer offers from the big banks side by side, plus no-cost accounts and building credit.", link: "Compare banks" },
     phone: { title: "Phone plans", body: "Prepaid, postpaid and budget options, and which suits a short or long stay.", link: "Compare carriers" },
-    transit: { title: "Getting around", body: "City buses, student passes and getting between cities without a car.", link: "Official source" },
+    transit: { title: "Getting around", body: "City buses, student passes and getting between cities without a car.", link: "Compare city buses" },
     winter: { title: "Winter basics", body: "What to wear, where to buy it, and how to keep your home warm and safe.", link: "Read the guide" },
   },
   housing: {
@@ -111,6 +111,14 @@ export const en = {
       unavailable: "Something went wrong. Please try again.",
       "not-configured": "The assistant is not available yet. Please use the checklist and official links for now.",
     },
+  },
+  article: {
+    back: "All essentials",
+    loading: "Loading the guide…",
+    error: "We could not load this guide. Check your connection and try again.",
+    sources: "Official sources",
+    table: "Comparison table, scrolls sideways",
+    lastChecked: "Last checked: {{date}}. Rules change, so always confirm on the official page.",
   },
   comingSoon: {
     title: "This page is on its way",

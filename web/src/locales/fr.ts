@@ -52,12 +52,12 @@ export const fr: Messages = {
   essentials: {
     heading: "L'essentiel, au même endroit",
     lead: "De courtes explications, avec un lien vers la source officielle sur chaque fiche.",
-    sin: { title: "NAS et pièces d'identité", body: "Ce qu'est un numéro d'assurance sociale et quels documents garder sur vous.", link: "Source officielle" },
-    health: { title: "Carte d'assurance-maladie", body: "Qui est admissible, comment présenter une demande et comment trouver un médecin de famille.", link: "Source officielle" },
-    driving: { title: "Permis de conduire", body: "Utiliser le permis de votre pays et les étapes pour obtenir celui du Nouveau-Brunswick.", link: "Source officielle" },
-    banking: { title: "Services bancaires", body: "Les comptes pour nouveaux arrivants et étudiants des cinq grandes banques, côte à côte.", link: "Comparer 5 banques" },
+    sin: { title: "NAS et pièces d'identité", body: "Ce qu'est un numéro d'assurance sociale et quels documents garder sur vous.", link: "Lire le guide" },
+    health: { title: "Carte d'assurance-maladie", body: "Qui est admissible, comment présenter une demande et comment trouver un médecin de famille.", link: "Lire le guide" },
+    driving: { title: "Permis de conduire", body: "Utiliser le permis de votre pays et les étapes pour obtenir celui du Nouveau-Brunswick.", link: "Lire le guide" },
+    banking: { title: "Services bancaires", body: "Les offres des grandes banques pour les nouveaux arrivants, côte à côte, plus les comptes sans frais et le crédit.", link: "Comparer les banques" },
     phone: { title: "Forfaits de téléphone", body: "Options prépayées, postpayées et économiques, selon la durée de votre séjour.", link: "Comparer les fournisseurs" },
-    transit: { title: "Se déplacer", body: "Autobus urbains, laissez-passer étudiants et déplacements entre les villes sans voiture.", link: "Source officielle" },
+    transit: { title: "Se déplacer", body: "Autobus urbains, laissez-passer étudiants et déplacements entre les villes sans voiture.", link: "Comparer les autobus" },
     winter: { title: "L'hiver, les bases", body: "Quoi porter, où l'acheter et comment garder votre logement chaud et sécuritaire.", link: "Lire le guide" },
   },
   housing: {
@@ -113,6 +113,14 @@ export const fr: Messages = {
       unavailable: "Une erreur s'est produite. Veuillez réessayer.",
       "not-configured": "L'assistant n'est pas encore disponible. Utilisez la liste et les liens officiels pour le moment.",
     },
+  },
+  article: {
+    back: "Tout l'essentiel",
+    loading: "Chargement du guide…",
+    error: "Nous n'avons pas pu charger ce guide. Vérifiez votre connexion et réessayez.",
+    sources: "Sources officielles",
+    table: "Tableau comparatif, défile horizontalement",
+    lastChecked: "Dernière vérification : {{date}}. Les règles changent; confirmez toujours sur la page officielle.",
   },
   comingSoon: {
     title: "Cette page arrive bientôt",

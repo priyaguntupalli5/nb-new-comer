@@ -1,15 +1,14 @@
 import { useTranslation } from "react-i18next";
-import { OFFICIAL_LINKS } from "../../lib/content";
 import { Icon, type IconName } from "../Icon";
 import { SmartLink } from "../SmartLink";
 
 const cards: { key: string; icon: IconName; to: string }[] = [
-  { key: "sin", icon: "idCard", to: OFFICIAL_LINKS.sin },
-  { key: "health", icon: "heart", to: OFFICIAL_LINKS.medicare },
-  { key: "driving", icon: "car", to: OFFICIAL_LINKS.driving },
+  { key: "sin", icon: "idCard", to: "/essentials/sin-id" },
+  { key: "health", icon: "heart", to: "/essentials/health-card" },
+  { key: "driving", icon: "car", to: "/essentials/drivers-licence" },
   { key: "banking", icon: "bank", to: "/essentials/banking" },
   { key: "phone", icon: "phone", to: "/essentials/phone-plans" },
-  { key: "transit", icon: "bus", to: OFFICIAL_LINKS.transit },
+  { key: "transit", icon: "bus", to: "/essentials/getting-around" },
   { key: "winter", icon: "snowflake", to: "/essentials/winter" },
 ];
 
