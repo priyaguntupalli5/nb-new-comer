@@ -27,6 +27,7 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="checklist" element={<ChecklistPage />} />
         <Route path="essentials/:slug" element={<ArticlePage section="essentials" />} />
+        <Route path="housing/:slug" element={<ArticlePage section="housing" />} />
         <Route path="*" element={<ComingSoonPage />} />
       </Route>
     </Routes>

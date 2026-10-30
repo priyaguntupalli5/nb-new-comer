@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
-import { CITIES, OFFICIAL_LINKS, RENTAL_SITES } from "../../lib/content";
+import { CITIES, RENTAL_SITES } from "../../lib/content";
 import { SmartLink } from "../SmartLink";
 
 const cardClass = "block h-full rounded-xl border border-ink-line bg-ink-raised p-5";
@@ -21,14 +21,14 @@ export function Housing() {
         <div className="mt-8 grid gap-4 lg:grid-cols-[2fr_1fr]">
           <ul className="grid gap-4 sm:grid-cols-2">
             <li>
-              <SmartLink to={OFFICIAL_LINKS.renting} className={linkCardClass}>
+              <Link to="/housing/renting" className={linkCardClass}>
                 <CardText title={t("housing.renting.title")} body={t("housing.renting.body")} />
-              </SmartLink>
+              </Link>
             </li>
             <li>
-              <SmartLink to={OFFICIAL_LINKS.tenantRights} className={linkCardClass}>
+              <Link to="/housing/tenant-rights" className={linkCardClass}>
                 <CardText title={t("housing.rights.title")} body={t("housing.rights.body")} />
-              </SmartLink>
+              </Link>
             </li>
             <li className={cardClass}>
               <h3 className="font-display text-lg font-bold">{t("housing.rents.title")}</h3>
@@ -36,7 +36,8 @@ export function Housing() {
                 {CITIES.map((city) => (
                   <li key={city.slug}>
                     <Link
-                      to={`/housing/rents/${city.slug}`}
+                      // One page compares all three cities side by side.
+                      to="/housing/rents"
                       className="block rounded-full border border-ink-line bg-ink px-3 py-1 text-sm font-semibold hover:border-mint-strong"
                     >
                       {city.name}

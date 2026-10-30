@@ -5,7 +5,7 @@ import { Router } from "express";
 import { rateLimit } from "express-rate-limit";
 import { z } from "zod";
 import { logger } from "../../lib/logger.js";
-import { loadSection } from "../content/content.service.js";
+import { loadSection, SECTIONS } from "../content/content.service.js";
 import { buildChecklistKnowledge, PROFILE_LABELS } from "./checklist-knowledge.js";
 
 export const chatRouter = Router();
@@ -16,7 +16,7 @@ const MODEL = process.env.BEDROCK_MODEL_ID || "global.anthropic.claude-haiku-4-5
 
 const SYSTEM_PROMPT = `You are the assistant for NB Newcomer Guide, a website that helps newcomers through their first 90 days in New Brunswick, Canada. People ask you about the steps in their checklist: what to bring, where to go, what it costs, how long it takes, and what to watch out for.
 
-Answer only from the guide content below: the checklist steps and the essentials articles. It was collected from official government sources, and it is the only information you can rely on. If the answer is not in it, say that you do not have that information and point the person to the most relevant official source link or phone number from the checklist. Do not fill gaps from general knowledge, and never guess fees, processing times, documents or eligibility, because a wrong answer can cost a newcomer a wasted trip or a rejected application.
+Answer only from the guide content below: the checklist steps and the essentials and housing guides. It was collected from official government sources, and it is the only information you can rely on. If the answer is not in it, say that you do not have that information and point the person to the most relevant official source link or phone number from the checklist. Do not fill gaps from general knowledge, and never guess fees, processing times, documents or eligibility, because a wrong answer can cost a newcomer a wasted trip or a rejected application.
 
 Some steps have a separate version for each category of newcomer: international student, permanent resident, work permit holder, and family moving together. Use the version that matches the person's category. If the answer depends on their category and you do not know it, ask them which one applies.
 
@@ -65,8 +65,9 @@ chatRouter.post("/", chatLimiter, async (req, res) => {
   }
   client ??= new AnthropicBedrock();
 
-  const [checklist, essentials] = await Promise.all([buildChecklistKnowledge(), loadSection("essentials")]);
-  const articles = essentials
+  const [checklist, ...sections] = await Promise.all([buildChecklistKnowledge(), ...SECTIONS.map(loadSection)]);
+  const articles = sections
+    .flat()
     .map((a) => `## ${a.title}\n${a.body}\nOfficial sources: ${a.sources.map((s) => s.url).join(", ")} (last checked ${a.lastChecked})`)
     .join("\n\n");
   const context = [
@@ -92,7 +93,7 @@ chatRouter.post("/", chatLimiter, async (req, res) => {
           { type: "text", text: SYSTEM_PROMPT },
           {
             type: "text",
-            text: `<checklist>\n${checklist}\n</checklist>\n\n<essentials>\n${articles}\n</essentials>`,
+            text: `<checklist>\n${checklist}\n</checklist>\n\n<guides>\n${articles}\n</guides>`,
             cache_control: { type: "ephemeral" },
           },
           // After the cache breakpoint, so a different category or language doesn't invalidate the cached checklist.

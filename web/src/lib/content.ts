@@ -2,8 +2,6 @@
 export const CONTENT_CHECKED_AT = "2026-10-27";
 
 export const OFFICIAL_LINKS = {
-  renting: "https://www.gnb.ca/en/topic/family-home-community/housing-property.html",
-  tenantRights: "https://www.gnb.ca/en/topic/family-home-community/housing-property/renters.html",
   newcomerOrgs: "https://www.gnb.ca/en/topic/family-home-community/immigration/newcomers.html",
 };
 

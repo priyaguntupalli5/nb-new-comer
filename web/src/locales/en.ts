@@ -113,7 +113,7 @@ export const en = {
     },
   },
   article: {
-    back: "All essentials",
+    back: { essentials: "All essentials", housing: "All housing guides" },
     loading: "Loading the guide…",
     error: "We could not load this guide. Check your connection and try again.",
     sources: "Official sources",
