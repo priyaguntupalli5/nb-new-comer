@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { ProfileType } from "@prisma/client";
 import { z } from "zod";
+import { checklistFingerprint } from "../../lib/fingerprint.js";
 import { prisma } from "../../lib/prisma.js";
 
 export const checklistRouter = Router();
@@ -20,10 +21,11 @@ checklistRouter.get("/", async (req, res) => {
     include: { translations: { where: { locale: lang } } },
   });
 
-  // English lives on the item itself. Any translated field replaces it; untranslated items stay in English.
+  // English lives on the item itself. A translation is used only while it was made from the current English;
+  // untranslated or outdated items stay in English.
   const items = rows.map(({ translations, ...item }) => {
     const t = translations[0];
-    if (!t) return item;
+    if (!t || t.sourceHash !== checklistFingerprint(item)) return item;
     return {
       ...item,
       title: t.title,

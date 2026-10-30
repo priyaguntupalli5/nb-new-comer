@@ -1,4 +1,5 @@
 import { PrismaClient, ProfileType } from "@prisma/client";
+import { checklistFingerprint } from "../src/lib/fingerprint.js";
 
 const prisma = new PrismaClient();
 
@@ -828,7 +829,8 @@ async function main() {
     await prisma.profileItem.createMany({
       data: profiles.map((profileType) => ({ profileType, checklistItemId: item.id })),
     });
-    const french: French = fr;
+    // Fingerprint the English as saved, so the API can tell when this French no longer matches it.
+    const french = { ...(fr as French), sourceHash: checklistFingerprint(item) };
     await prisma.checklistItemTranslation.upsert({
       where: { checklistItemId_locale: { checklistItemId: item.id, locale: "fr" } },
       create: { ...french, checklistItemId: item.id, locale: "fr" },

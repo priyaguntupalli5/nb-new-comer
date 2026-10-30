@@ -1,8 +1,8 @@
-import { createHash } from "node:crypto";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
 import { z } from "zod";
+import { fingerprint } from "../../lib/fingerprint.js";
 
 // Guide articles live as Markdown files in api/content/<section>/<slug>.md, so edits show up in git history.
 // A French version sits next to it as <slug>.fr.md. Resolves the same from src/ (dev) and dist/ (build).
@@ -28,10 +28,13 @@ export type Article = z.infer<typeof frontmatterSchema> & { slug: string; body: 
 
 const SLUG_PATTERN = /^[a-z0-9-]+$/;
 
-// Fingerprint of an English guide. Line endings are normalized so a Windows checkout hashes the same.
-export function sourceHash(raw: string): string {
-  return createHash("sha256").update(raw.replace(/\r\n/g, "\n")).digest("hex").slice(0, 16);
-}
+// Fingerprint of an English guide file, recorded by its translations as `translatedFrom`.
+export const sourceHash = fingerprint;
+
+// Guides only change with a deploy, so production keeps each one in memory after the first read.
+// Development always reads the file, so edits show up without a restart. Only found guides are cached,
+// so requests for made-up slugs cannot grow the cache.
+const cache = process.env.NODE_ENV === "production" ? new Map<string, Article>() : null;
 
 async function readContent(section: Section, file: string): Promise<string | null> {
   try {
@@ -43,6 +46,15 @@ async function readContent(section: Section, file: string): Promise<string | nul
 
 export async function loadArticle(section: Section, slug: string, lang: Language = "en"): Promise<Article | null> {
   if (!SLUG_PATTERN.test(slug)) return null;
+  const key = `${section}/${slug}/${lang}`;
+  const cached = cache?.get(key);
+  if (cached) return cached;
+  const article = await readArticle(section, slug, lang);
+  if (article) cache?.set(key, article);
+  return article;
+}
+
+async function readArticle(section: Section, slug: string, lang: Language): Promise<Article | null> {
   const raw = await readContent(section, `${slug}.md`);
   if (raw === null) return null;
 
