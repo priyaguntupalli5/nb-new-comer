@@ -8,6 +8,8 @@ const schema = z.object({
   LOG_LEVEL: z.string().default("info"),
   // Shared secret for the moderation endpoints until accounts and roles exist. Unset means moderation is off.
   ADMIN_TOKEN: z.string().min(24).optional(),
+  // Production only: secret CloudFront sends as X-Origin-Verify, so the public Lambda URL can't be called directly.
+  ORIGIN_SECRET: z.string().min(32).optional(),
 });
 
 export const env = schema.parse(process.env);

@@ -5,6 +5,7 @@ import { Router } from "express";
 import { rateLimit } from "express-rate-limit";
 import { z } from "zod";
 import { logger } from "../../lib/logger.js";
+import { viewerKey } from "../../middleware/cloudfront.js";
 import { loadSection, SECTIONS } from "../content/content.service.js";
 import { buildChecklistKnowledge, PROFILE_LABELS } from "./checklist-knowledge.js";
 
@@ -45,7 +46,13 @@ const bodySchema = z.object({
 });
 
 // Public endpoint that costs money per call, so keep each visitor to a reasonable pace.
-const chatLimiter = rateLimit({ windowMs: 60_000, limit: 10, standardHeaders: "draft-8", legacyHeaders: false });
+const chatLimiter = rateLimit({
+  windowMs: 60_000,
+  limit: 10,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  keyGenerator: viewerKey,
+});
 
 let client: AnthropicBedrock | undefined;
 

@@ -1,5 +1,7 @@
 node_modules
 dist
+.lambda
+.aws-sam
 .env
 *.log
 .DS_Store

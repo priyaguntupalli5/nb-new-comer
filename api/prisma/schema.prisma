@@ -1,5 +1,7 @@
 generator client {
   provider = "prisma-client-js"
+  // "native" for this machine and CI; the arm64 engine for AWS Lambda (Graviton, Amazon Linux 2023).
+  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
 }
 
 datasource db {
