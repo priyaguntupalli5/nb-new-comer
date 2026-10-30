@@ -91,7 +91,7 @@ export const en = {
   },
   chat: {
     open: "Ask a question",
-    title: "Ask about your checklist",
+    title: "Ask me anything about the guide",
     subtitle: "Answers come from the official sources in this guide",
     close: "Close chat",
     intro: "Ask anything about your first steps: documents, where to go, costs and timing. For example:",

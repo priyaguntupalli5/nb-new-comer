@@ -92,8 +92,16 @@ describe("API", () => {
     }
   });
 
+  it("serves every housing guide in French", async () => {
+    for (const slug of ["renting", "tenant-rights", "rents", "campus"]) {
+      const res = await request(app).get(`/api/content/housing/${slug}?lang=fr`);
+      expect(res.status, slug).toBe(200);
+      expect(res.body.lang, slug).toBe("fr");
+    }
+  });
+
   it("falls back to English for a guide with no French version", async () => {
-    const res = await request(app).get("/api/content/housing/renting?lang=fr");
+    const res = await request(app).get("/api/content/community/food?lang=fr");
     expect(res.status).toBe(200);
     expect(res.body.lang).toBe("en");
   });
