@@ -9,6 +9,16 @@ Parameters:
     Type: String
     Default: priyaguntupalli5/nb-new-comer
     Description: owner/repo allowed to assume the role
+  # Entered in the CloudFormation console, not stored in the repo. Find both in CloudTrail: the userName of a
+  # failed AssumeRoleWithWebIdentity event reads repo:<owner>@<ownerId>/<repo>@<repoId>:ref:...
+  GitHubOwnerId:
+    Type: String
+    AllowedPattern: '[0-9]+'
+    Description: Numeric ID of the repo owner, which GitHub puts in the OIDC subject (owner@id/repo@id)
+  GitHubRepoId:
+    Type: String
+    AllowedPattern: '[0-9]+'
+    Description: Numeric ID of the repository, also part of the subject. IDs never change, even if the repo is renamed
   Branch:
     Type: String
     Default: main
@@ -50,10 +60,20 @@ Resources:
             Principal:
               Federated: !Sub 'arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com'
             Action: sts:AssumeRoleWithWebIdentity
+            # GitHub sends the subject either as repo:owner/repo:ref:... or, for this account, with immutable IDs:
+            # repo:owner@<ownerId>/repo@<repoId>:ref:... Either way it must be this repo's deploy branch.
             Condition:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
-                token.actions.githubusercontent.com:sub: !Sub 'repo:${GitHubRepo}:ref:refs/heads/${Branch}'
+                token.actions.githubusercontent.com:sub:
+                  - !Sub 'repo:${GitHubRepo}:ref:refs/heads/${Branch}'
+                  - !Join
+                    - ''
+                    - - 'repo:'
+                      - !Select [0, !Split ['/', !Ref GitHubRepo]]
+                      - !Sub '@${GitHubOwnerId}/'
+                      - !Select [1, !Split ['/', !Ref GitHubRepo]]
+                      - !Sub '@${GitHubRepoId}:ref:refs/heads/${Branch}'
       # PowerUserAccess covers CloudFormation, Lambda, S3, CloudFront and Logs but no IAM.
       # IAM rights below are limited to the roles SAM creates for this stack (all prefixed with its name).
       ManagedPolicyArns:
