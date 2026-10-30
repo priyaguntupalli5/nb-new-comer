@@ -7,7 +7,7 @@ import { z } from "zod";
 // Resolves the same from src/ (dev) and dist/ (build).
 const CONTENT_DIR = path.resolve(import.meta.dirname, "../../../content");
 
-export const SECTIONS = ["essentials"] as const;
+export const SECTIONS = ["essentials", "housing"] as const;
 export type Section = (typeof SECTIONS)[number];
 
 const frontmatterSchema = z.object({

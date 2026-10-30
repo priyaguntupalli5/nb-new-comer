@@ -72,6 +72,13 @@ describe("API", () => {
     }
   });
 
+  it("serves every housing guide with valid frontmatter", async () => {
+    for (const slug of ["renting", "tenant-rights", "rents", "campus"]) {
+      const res = await request(app).get(`/api/content/housing/${slug}`);
+      expect(res.status, slug).toBe(200);
+    }
+  });
+
   it("returns 404 for an unknown article and rejects path tricks", async () => {
     expect((await request(app).get("/api/content/essentials/not-written-yet")).status).toBe(404);
     expect((await request(app).get("/api/content/essentials/..%2F..%2F.env")).status).toBe(404);

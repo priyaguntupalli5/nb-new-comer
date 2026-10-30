@@ -17,7 +17,9 @@ const proseClass =
   "[&_th]:border-b-2 [&_th]:border-line [&_th]:bg-paper [&_th]:p-3 [&_th]:text-left [&_th]:align-bottom [&_th]:font-semibold " +
   "[&_td]:border-b [&_td]:border-line [&_td]:p-3 [&_td]:align-top";
 
-export function ArticlePage({ section }: { section: string }) {
+type Section = "essentials" | "housing";
+
+export function ArticlePage({ section }: { section: Section }) {
   const { slug = "" } = useParams();
   const { t, i18n } = useTranslation();
   const { data: article, isPending, error, refetch } = useArticle(section, slug);
@@ -28,8 +30,8 @@ export function ArticlePage({ section }: { section: string }) {
   return (
     <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:py-14" aria-busy={isPending}>
       {/* A plain link so the browser scrolls to the section; a router Link ignores the #hash. */}
-      <a href="/#essentials" className="text-sm font-semibold text-teal underline underline-offset-4">
-        ← {t("article.back")}
+      <a href={`/#${section}`} className="text-sm font-semibold text-teal underline underline-offset-4">
+        ← {t(`article.back.${section}`)}
       </a>
 
       {isPending ? (
@@ -71,7 +73,10 @@ export function ArticlePage({ section }: { section: string }) {
                 ),
                 // Links inside the guide stay in the app; everything else is an official source in a new tab.
                 a: ({ href = "", children }) =>
-                  href.startsWith("/") ? (
+                  // Links to a section of the home page (/#housing) need a plain link so the browser scrolls.
+                  href.startsWith("/#") ? (
+                    <a href={href}>{children}</a>
+                  ) : href.startsWith("/") ? (
                     <Link to={href}>{children}</Link>
                   ) : (
                     <a href={href} target="_blank" rel="noopener noreferrer">
