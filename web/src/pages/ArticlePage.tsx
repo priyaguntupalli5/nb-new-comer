@@ -52,7 +52,12 @@ export function ArticlePage({ section }: { section: Section }) {
           </button>
         </div>
       ) : (
-        <>
+        <div lang={article.lang}>
+          {!i18n.language.startsWith(article.lang) && (
+            <p lang={i18n.language} className="mt-6 rounded-lg bg-amber/20 px-3 py-2 text-sm">
+              {t("article.notTranslated")}
+            </p>
+          )}
           <h1 className="mt-6 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{article.title}</h1>
           <p className="mt-4 text-lg leading-relaxed text-muted">{article.summary}</p>
 
@@ -109,11 +114,12 @@ export function ArticlePage({ section }: { section: Section }) {
                 </li>
               ))}
             </ul>
+            {t("article.sourcesLanguage") && <p className="mt-3 text-sm text-muted">{t("article.sourcesLanguage")}</p>}
             <p className="mt-4 text-sm text-muted">
               {t("article.lastChecked", { date: formatDate(article.lastChecked, i18n.language) })}
             </p>
           </aside>
-        </>
+        </div>
       )}
     </article>
   );

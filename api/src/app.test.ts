@@ -77,6 +77,31 @@ describe("API", () => {
     }
   });
 
+  it("serves an essentials article in French", async () => {
+    const res = await request(app).get("/api/content/essentials/sin-id?lang=fr");
+    expect(res.status).toBe(200);
+    expect(res.body.lang).toBe("fr");
+    expect(res.body.title).toBe("NAS et pièces d'identité");
+    expect(res.body.body).toContain("## Qu'est-ce qu'un NAS");
+  });
+
+  it("serves every essentials article when French is asked for", async () => {
+    for (const slug of ["sin-id", "health-card", "drivers-licence", "banking", "phone-plans", "getting-around", "winter"]) {
+      const res = await request(app).get(`/api/content/essentials/${slug}?lang=fr`);
+      expect(res.status, slug).toBe(200);
+    }
+  });
+
+  it("falls back to English for a guide with no French version", async () => {
+    const res = await request(app).get("/api/content/housing/renting?lang=fr");
+    expect(res.status).toBe(200);
+    expect(res.body.lang).toBe("en");
+  });
+
+  it("rejects a guide language the site does not offer", async () => {
+    expect((await request(app).get("/api/content/essentials/sin-id?lang=de")).status).toBe(400);
+  });
+
   it("serves every housing guide with valid frontmatter", async () => {
     for (const slug of ["renting", "tenant-rights", "rents", "campus"]) {
       const res = await request(app).get(`/api/content/housing/${slug}`);

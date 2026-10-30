@@ -34,6 +34,7 @@ describe("ArticlePage", () => {
           body:
             "## Who can ask for your SIN\n\n- **Your employer**\n\nSee [your checklist](/checklist).\n\n" +
             "| Bank | Monthly fee |\n|---|---|\n| RBC | $0 for 1 year |\n",
+          lang: "en",
         }),
       ),
     );
@@ -47,6 +48,7 @@ describe("ArticlePage", () => {
     expect(screen.getByText(/Last checked: October 29, 2026/)).toBeInTheDocument();
     expect(screen.getByRole("columnheader", { name: "Monthly fee" })).toBeInTheDocument();
     expect(screen.getByRole("cell", { name: "$0 for 1 year" })).toBeInTheDocument();
+    expect(screen.queryByText(/not available in French/)).not.toBeInTheDocument();
   });
 
   it("shows the coming-soon page for an essential that is not written yet", async () => {

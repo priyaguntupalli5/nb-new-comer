@@ -119,6 +119,8 @@ export const en = {
     sources: "Official sources",
     table: "Comparison table, scrolls sideways",
     lastChecked: "Last checked: {{date}}. Rules change, so always confirm on the official page.",
+    notTranslated: "This guide is not available in French yet, so it is shown in English.",
+    sourcesLanguage: "",
   },
   suggest: {
     title: "Suggest a resource",

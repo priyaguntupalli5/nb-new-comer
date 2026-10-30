@@ -10,7 +10,8 @@
     "test": "vitest run",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "content:status": "tsx src/scripts/content-status.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
