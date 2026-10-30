@@ -8,16 +8,16 @@ sources:
     url: https://www.canada.ca/en/financial-consumer-agency/services/banking/opening-bank-account.html
   - title: Comptes à frais modiques et sans frais
     url: https://www.canada.ca/en/financial-consumer-agency/services/banking/bank-accounts/low-cost-no-cost.html
-  - title: RBC Newcomer Advantage
-    url: https://www.rbcroyalbank.com/new-to-canada/rbc-newcomer-advantage-bank-account/
-  - title: Offres bancaires de TD pour les nouveaux arrivants
-    url: https://www.td.com/ca/en/personal-banking/products/banking-offers-for-newcomers
-  - title: Scotiabank StartRight
+  - title: Avantage Nouveaux arrivants RBC
+    url: https://www.rbcroyalbank.com/nouveaux-arrivants/compte-bancaire-avantage-nouveaux-arrivants-rbc/
+  - title: Forfait bancaire pour nouveaux arrivants TD
+    url: https://www.td.com/ca/fr/services-bancaires-personnels/produits/offres-bancaires-pour-nouveaux-arrivants
+  - title: BonDébut de la Banque Scotia
     url: https://startright.scotiabank.com/
-  - title: BMO NewStart pour les résidents permanents et les travailleurs étrangers
-    url: https://www.bmo.com/en-ca/main/personal/newcomers-to-canada/foreign-worker-permanent-resident/
-  - title: Offres bancaires de CIBC pour les nouveaux arrivants
-    url: https://www.cibc.com/en/journeys/banking-offers-for-newcomers.html
+  - title: Nouveau commencement avec BMO, pour les résidents permanents et les travailleurs étrangers
+    url: https://www.bmo.com/fr-ca/principal/particuliers/nouveaux-arrivants-au-canada/travailleurs-etrangers-residents-permanents/
+  - title: Forfait bancaire CIBC pour les nouveaux arrivants
+    url: https://www.cibc.com/fr/journeys/new-to-canada.html
   - title: Outil de comparaison des comptes bancaires
     url: https://itools-ioutils.fcac-acfc.gc.ca/ACT-OCC/SearchFilter-eng.aspx
   - title: Encaisser et déposer des chèques
@@ -59,13 +59,13 @@ Ce qu'indiquait la page pour nouveaux arrivants de chaque banque le **29 octobre
 
 | Banque et forfait | Frais mensuels pendant l'offre | Après l'offre | Qui est admissible | Carte de crédit sans historique de crédit canadien | Avant votre arrivée |
 |---|---|---|---|---|---|
-| [RBC Newcomer Advantage](https://www.rbcroyalbank.com/new-to-canada/rbc-newcomer-advantage-bank-account/) | 0 $ pendant 1 an | 12,95 $ par mois | Résidents permanents et étudiants étrangers arrivés au cours des 12 derniers mois; travailleurs temporaires arrivés au cours des 48 derniers mois | Oui, limite jusqu'à 15 000 $ | Non : vous devez vivre au Canada pour ouvrir le compte |
-| [TD New to Canada Banking Package](https://www.td.com/ca/en/personal-banking/products/banking-offers-for-newcomers) | 0 $ pendant 1 an (les frais de 17,95 $ sont remboursés) | Frais habituels, sauf si vous maintenez un solde minimum | Résidents permanents et temporaires, y compris les étudiants, au Canada depuis 5 ans ou moins | Oui, limite jusqu'à 15 000 $, après une vérification de crédit | Seulement depuis la Chine ou l'Inde, par téléphone. Vous passez en succursale dans les 75 jours |
-| [Scotiabank StartRight](https://startright.scotiabank.com/) | 0 $ la première année | 16,95 $ par mois, sauf si vous gardez 4 000 $ dans le compte chaque jour | Résidents permanents au Canada depuis 0 à 5 ans, étudiants étrangers et travailleurs étrangers | Oui, limite jusqu'à 15 000 $, sous réserve d'approbation | Oui : un compte international que vous pouvez ouvrir et approvisionner avant de déménager |
-| [CIBC Newcomer Banking Bundle](https://www.cibc.com/en/journeys/banking-offers-for-newcomers.html) | 0 $ pendant au plus 24 mois | Frais habituels | Résidents permanents arrivés au cours des 5 dernières années; travailleurs titulaires d'un permis de travail d'au moins 12 mois | Oui, sans dépôt ni historique de crédit | Vous pouvez vérifier votre admissibilité avant votre arrivée |
-| [BMO NewStart](https://www.bmo.com/en-ca/main/personal/newcomers-to-canada/foreign-worker-permanent-resident/) | 0 $ pendant 2 ans (les frais de 17,95 $ sont annulés) | 17,95 $ par mois | Résidents permanents et travailleurs étrangers arrivés au cours des 5 dernières années | Oui, sans historique de crédit, sous réserve d'approbation | Oui, depuis certains pays : ouvrez le compte en ligne et envoyez jusqu'à 75 000 $ avant votre arrivée |
+| [Avantage Nouveaux arrivants RBC](https://www.rbcroyalbank.com/nouveaux-arrivants/compte-bancaire-avantage-nouveaux-arrivants-rbc/) | 0 $ pendant 1 an | 12,95 $ par mois | Résidents permanents et étudiants étrangers arrivés au cours des 12 derniers mois; travailleurs temporaires arrivés au cours des 48 derniers mois | Oui, limite jusqu'à 15 000 $ | Non : vous devez vivre au Canada pour ouvrir le compte |
+| [Forfait bancaire pour nouveaux arrivants TD](https://www.td.com/ca/fr/services-bancaires-personnels/produits/offres-bancaires-pour-nouveaux-arrivants) | 0 $ pendant 1 an (les frais de 17,95 $ sont remboursés) | Frais habituels, sauf si vous maintenez un solde minimum | Résidents permanents et temporaires, y compris les étudiants, au Canada depuis 5 ans ou moins | Oui, limite jusqu'à 15 000 $, après une vérification de crédit | Seulement depuis la Chine ou l'Inde, par téléphone. Vous passez en succursale dans les 75 jours |
+| [BonDébut de la Banque Scotia](https://startright.scotiabank.com/) | 0 $ la première année | 16,95 $ par mois, sauf si vous gardez 4 000 $ dans le compte chaque jour | Résidents permanents au Canada depuis 0 à 5 ans, étudiants étrangers et travailleurs étrangers | Oui, limite jusqu'à 15 000 $, sous réserve d'approbation | Oui : un compte international que vous pouvez ouvrir et approvisionner avant de déménager |
+| [Forfait bancaire CIBC pour les nouveaux arrivants](https://www.cibc.com/fr/journeys/new-to-canada.html) | 0 $ pendant au plus 24 mois | Frais habituels | Résidents permanents arrivés au cours des 5 dernières années; travailleurs titulaires d'un permis de travail d'au moins 12 mois | Oui, sans dépôt ni historique de crédit | Vous pouvez vérifier votre admissibilité avant votre arrivée |
+| [Nouveau commencement avec BMO](https://www.bmo.com/fr-ca/principal/particuliers/nouveaux-arrivants-au-canada/travailleurs-etrangers-residents-permanents/) | 0 $ pendant 2 ans (les frais de 17,95 $ sont annulés) | 17,95 $ par mois | Résidents permanents et travailleurs étrangers arrivés au cours des 5 dernières années | Oui, sans historique de crédit, sous réserve d'approbation | Oui, depuis certains pays : ouvrez le compte en ligne et envoyez jusqu'à 75 000 $ avant votre arrivée |
 
-Autres avantages à demander : RBC ne facture pas de frais de transfert sur les transferts d'argent internationaux, BMO ne facture pas de frais sur BMO Global Money Transfer, et TD ne facture pas de frais de transfert TD sur TD Global Transfer pendant au plus 12 mois. Les frais et taux de change des autres banques s'appliquent quand même.
+Autres avantages à demander : RBC ne facture pas de frais de transfert sur les transferts d'argent internationaux, BMO ne facture pas de frais sur son service de transfert d'argent international, et TD ne facture pas ses frais de transfert sur son service de virement international pendant au plus 12 mois. Les frais et taux de change des autres banques s'appliquent quand même.
 
 Lorsque vous comparez, vérifiez :
 
