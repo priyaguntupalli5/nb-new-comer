@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Link, useParams } from "react-router";
 import { NotFoundError, useArticle } from "../api/content";
 import { formatDate } from "../lib/content";
@@ -11,7 +12,10 @@ const proseClass =
   "[&_h2]:mt-10 [&_h2]:font-display [&_h2]:text-2xl [&_h2]:font-extrabold [&_h2]:tracking-tight " +
   "[&_p]:mt-3 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:space-y-1.5 [&_ul]:pl-6 [&_ol]:mt-3 [&_ol]:list-decimal " +
   "[&_ol]:space-y-1.5 [&_ol]:pl-6 [&_li]:marker:text-teal [&_strong]:font-semibold " +
-  "[&_a]:text-teal [&_a]:underline [&_a]:underline-offset-4";
+  "[&_a]:text-teal [&_a]:underline [&_a]:underline-offset-4 " +
+  "[&_table]:w-full [&_table]:min-w-[44rem] [&_table]:border-collapse [&_table]:text-sm " +
+  "[&_th]:border-b-2 [&_th]:border-line [&_th]:bg-paper [&_th]:p-3 [&_th]:text-left [&_th]:align-bottom [&_th]:font-semibold " +
+  "[&_td]:border-b [&_td]:border-line [&_td]:p-3 [&_td]:align-top";
 
 export function ArticlePage({ section }: { section: string }) {
   const { slug = "" } = useParams();
@@ -52,7 +56,19 @@ export function ArticlePage({ section }: { section: string }) {
 
           <div className={proseClass}>
             <Markdown
+              remarkPlugins={[remarkGfm]}
               components={{
+                // Wide comparison tables scroll sideways in their own box on phones instead of widening the page.
+                table: ({ children }) => (
+                  <div
+                    className="mt-4 overflow-x-auto rounded-xl border border-line bg-white"
+                    role="region"
+                    aria-label={t("article.table")}
+                    tabIndex={0}
+                  >
+                    <table>{children}</table>
+                  </div>
+                ),
                 // Links inside the guide stay in the app; everything else is an official source in a new tab.
                 a: ({ href = "", children }) =>
                   href.startsWith("/") ? (

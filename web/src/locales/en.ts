@@ -53,7 +53,7 @@ export const en = {
     sin: { title: "SIN and ID", body: "What a Social Insurance Number is, and which documents to keep with you.", link: "Read the guide" },
     health: { title: "Health card (Medicare)", body: "Who qualifies, how to apply, and how to find a family doctor.", link: "Read the guide" },
     driving: { title: "Driver's licence", body: "Using your licence from home, and the steps to get a New Brunswick one.", link: "Read the guide" },
-    banking: { title: "Banking", body: "Newcomer and student accounts from the five big banks, side by side.", link: "Compare 5 banks" },
+    banking: { title: "Banking", body: "Newcomer offers from the big banks side by side, plus no-cost accounts and building credit.", link: "Compare banks" },
     phone: { title: "Phone plans", body: "Prepaid, postpaid and budget options, and which suits a short or long stay.", link: "Compare carriers" },
     transit: { title: "Getting around", body: "City buses, student passes and getting between cities without a car.", link: "Official source" },
     winter: { title: "Winter basics", body: "What to wear, where to buy it, and how to keep your home warm and safe.", link: "Read the guide" },
@@ -117,6 +117,7 @@ export const en = {
     loading: "Loading the guide…",
     error: "We could not load this guide. Check your connection and try again.",
     sources: "Official sources",
+    table: "Comparison table, scrolls sideways",
     lastChecked: "Last checked: {{date}}. Rules change, so always confirm on the official page.",
   },
   comingSoon: {

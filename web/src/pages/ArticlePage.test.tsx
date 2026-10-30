@@ -31,7 +31,9 @@ describe("ArticlePage", () => {
           summary: "What a SIN is.",
           lastChecked: "2026-10-29",
           sources: [{ title: "Protect your SIN", url: "https://www.canada.ca/sin/protection.html" }],
-          body: "## Who can ask for your SIN\n\n- **Your employer**\n\nSee [your checklist](/checklist).",
+          body:
+            "## Who can ask for your SIN\n\n- **Your employer**\n\nSee [your checklist](/checklist).\n\n" +
+            "| Bank | Monthly fee |\n|---|---|\n| RBC | $0 for 1 year |\n",
         }),
       ),
     );
@@ -43,6 +45,8 @@ describe("ArticlePage", () => {
     expect(screen.getByRole("link", { name: "your checklist" })).toHaveAttribute("href", "/checklist");
     expect(screen.getByRole("link", { name: /Protect your SIN/ })).toHaveAttribute("target", "_blank");
     expect(screen.getByText(/Last checked: October 29, 2026/)).toBeInTheDocument();
+    expect(screen.getByRole("columnheader", { name: "Monthly fee" })).toBeInTheDocument();
+    expect(screen.getByRole("cell", { name: "$0 for 1 year" })).toBeInTheDocument();
   });
 
   it("shows the coming-soon page for an essential that is not written yet", async () => {
