@@ -92,6 +92,36 @@ describe("API", () => {
     expect((await request(app).get("/api/content/secrets/sin-id")).status).toBe(400);
   });
 
+  it("rejects an invalid resource suggestion", async () => {
+    const res = await request(app)
+      .post("/api/tips")
+      .send({ category: "restaurant", title: "X", city: "halifax", body: "short" });
+    expect(res.status).toBe(400);
+  });
+
+  it("quietly accepts a suggestion that fills the bot honeypot without saving it", async () => {
+    const res = await request(app).post("/api/tips").send({
+      category: "food",
+      title: "Spam Store",
+      city: "moncton",
+      body: "Buy cheap things at our store today",
+      website: "http://spam.example",
+    });
+    expect(res.status).toBe(201);
+  });
+
+  it("protects the moderation queue with the admin token", async () => {
+    vi.stubEnv("ADMIN_TOKEN", "");
+    expect((await request(app).get("/api/admin/tips/pending")).status).toBe(503);
+
+    vi.stubEnv("ADMIN_TOKEN", "a-very-long-test-admin-token-123");
+    expect((await request(app).get("/api/admin/tips/pending")).status).toBe(401);
+    expect(
+      (await request(app).get("/api/admin/tips/pending").set("Authorization", "Bearer wrong-token")).status,
+    ).toBe(401);
+    vi.unstubAllEnvs();
+  });
+
   it("returns 404 for unknown routes", async () => {
     const res = await request(app).get("/api/nope");
     expect(res.status).toBe(404);
