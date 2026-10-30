@@ -9,16 +9,19 @@ Parameters:
     Type: String
     Default: priyaguntupalli5/nb-new-comer
     Description: owner/repo allowed to assume the role
-  # Entered in the CloudFormation console, not stored in the repo. Find both in CloudTrail: the userName of a
-  # failed AssumeRoleWithWebIdentity event reads repo:<owner>@<ownerId>/<repo>@<repoId>:ref:...
+  # GitHub puts these IDs in the OIDC subject for this account: repo:<owner>@<ownerId>/<repo>@<repoId>:ref:...
+  # They are public (GitHub's API shows them) and grant nothing on their own: only a token GitHub signs for
+  # this repo's main branch can assume the role.
   GitHubOwnerId:
     Type: String
+    Default: '97687268'
     AllowedPattern: '[0-9]+'
-    Description: Numeric ID of the repo owner, which GitHub puts in the OIDC subject (owner@id/repo@id)
+    Description: Numeric ID of the repo owner
   GitHubRepoId:
     Type: String
+    Default: '1436392110'
     AllowedPattern: '[0-9]+'
-    Description: Numeric ID of the repository, also part of the subject. IDs never change, even if the repo is renamed
+    Description: Numeric ID of the repository. IDs never change, even if the repo is renamed
   Branch:
     Type: String
     Default: main
